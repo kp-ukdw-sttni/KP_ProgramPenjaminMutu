@@ -8,6 +8,7 @@ use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\ProgramStudiController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public / Auth routes (from Breeze) ────────────────────────────────────────
@@ -28,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('dokumen-mutu.download');
 
     // ── Standar Mutu ──────────────────────────────────────────────────────────
+    Route::get('/standar-mutu/export', [StandarMutuController::class, 'export'])
+        ->name('standar-mutu.export');
+    Route::post('/standar-mutu/import', [StandarMutuController::class, 'import'])
+        ->name('standar-mutu.import');
     Route::resource('standar-mutu', StandarMutuController::class);
 
     // ── Evaluasi Diri ─────────────────────────────────────────────────────────
@@ -58,6 +63,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/finding/{auditMutu}/close', [AuditInternalController::class, 'close'])
             ->name('close');
     });
+
+    // ── Profile ───────────────────────────────────────────────────────────────
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ── Admin-only: Manajemen Pengguna ────────────────────────────────────────
     Route::middleware('role:superadmin')->group(function () {

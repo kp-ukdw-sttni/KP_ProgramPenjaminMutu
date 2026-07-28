@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'e-SPMI') }} – STTNI</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,11 +30,8 @@
         <!-- Logo & App title -->
         <div class="relative z-10">
             <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center shadow-lg">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
+                <div class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-lg overflow-hidden">
+                    <img src="{{ asset('logo.png') }}" alt="Logo STTNI" class="w-full h-full object-contain">
                 </div>
                 <div>
                     <p class="text-white font-bold text-lg leading-tight">e-SPMI</p>
@@ -88,11 +86,8 @@
 
             <!-- Mobile logo -->
             <div class="lg:hidden flex items-center gap-2 mb-8">
-                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
+                <div class="w-8 h-8 rounded-lg bg-white p-0.5 flex items-center justify-center shadow overflow-hidden">
+                    <img src="{{ asset('logo.png') }}" alt="Logo STTNI" class="w-full h-full object-contain">
                 </div>
                 <span class="font-bold text-slate-800">e-SPMI STTNI</span>
             </div>

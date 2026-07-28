@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'e-SPMI') }} — @yield('title', 'Dashboard')</title>
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <meta name="description" content="Sistem Informasi Penjaminan Mutu Internal (e-SPMI) STTNI">
 
     <!-- Fonts -->
@@ -39,11 +40,8 @@
 
     {{-- Logo & App Name --}}
     <div class="flex items-center gap-3 h-16 px-6 border-b border-slate-700/50">
-        <div class="flex-shrink-0 w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center shadow-lg">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-lg overflow-hidden">
+            <img src="{{ asset('logo.png') }}" alt="Logo STTNI" class="w-full h-full object-contain">
         </div>
         <div class="min-w-0">
             <p class="text-white font-bold text-sm leading-tight truncate">e-SPMI STTNI</p>
@@ -206,8 +204,13 @@
         </div>
 
         <!-- Right side info -->
-        <div class="flex items-center gap-3 text-sm text-slate-500">
-            <span class="hidden sm:block">{{ now()->isoFormat('dddd, D MMMM YYYY') }}</span>
+        <div class="flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 shadow-sm">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>{{ now()->isoFormat('dddd, D MMMM YYYY') }}</span>
+            </div>
         </div>
     </header>
 

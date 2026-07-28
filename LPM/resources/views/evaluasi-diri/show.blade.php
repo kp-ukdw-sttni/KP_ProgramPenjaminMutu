@@ -32,8 +32,8 @@
                     </form>
                 @endif
                 
-                @if($evaluasi->bukti_fisik)
-                    <a href="{{ Storage::url($evaluasi->bukti_fisik) }}" download class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">
+                @if($evaluasi->file_bukti_fisik)
+                    <a href="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">
                         Download Bukti
                     </a>
                 @endif
@@ -65,6 +65,29 @@
                     <dt class="text-sm font-medium text-slate-500">Deskripsi Ketercapaian</dt>
                     <dd class="mt-1 text-sm text-slate-900 whitespace-pre-wrap">{{ $evaluasi->deskripsi_ketercapaian }}</dd>
                 </div>
+                @if($evaluasi->file_bukti_fisik)
+                    <div class="sm:col-span-2 mt-4 pt-4 border-t border-slate-100">
+                        <dt class="text-sm font-medium text-slate-500 mb-2">Pratinjau Bukti Fisik</dt>
+                        @php
+                            $ext = pathinfo($evaluasi->file_bukti_fisik, PATHINFO_EXTENSION);
+                            $isImage = in_array(strtolower($ext), ['jpg', 'jpeg', 'png']);
+                            $isPdf = strtolower($ext) === 'pdf';
+                        @endphp
+                        @if($isImage)
+                            <div class="p-2 bg-slate-50 border border-slate-200 rounded-xl max-w-md shadow-sm">
+                                <img src="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" alt="Pratinjau" class="max-h-72 rounded-lg object-contain">
+                            </div>
+                        @elseif($isPdf)
+                            <div class="p-2 bg-slate-50 border border-slate-200 rounded-xl shadow-sm">
+                                <iframe src="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" class="w-full h-96 rounded-lg" frameborder="0"></iframe>
+                            </div>
+                        @else
+                            <div class="text-sm text-slate-600">
+                                Pratinjau tidak tersedia untuk format file ini. Silakan klik tombol "Download Bukti" di atas untuk mengunduh.
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </dl>
         </div>
     </div>

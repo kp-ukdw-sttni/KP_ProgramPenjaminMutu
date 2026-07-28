@@ -75,8 +75,11 @@
                         <label for="semester" class="block text-sm font-medium text-slate-700">Semester</label>
                         <select name="semester" id="semester" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <option value="">-- Pilih Semester --</option>
-                            <option value="Ganjil" {{ old('semester') == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                            <option value="Genap" {{ old('semester') == 'Genap' ? 'selected' : '' }}>Genap</option>
+                            @foreach(\App\Enums\Semester::cases() as $sem)
+                                <option value="{{ $sem->value }}" {{ old('semester') == $sem->value ? 'selected' : '' }}>
+                                    {{ $sem->label() }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('semester')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -101,10 +104,10 @@
                 </div>
 
                 <div>
-                    <label for="bukti_fisik" class="block text-sm font-medium text-slate-700">Bukti Fisik (Opsional)</label>
-                    <input type="file" name="bukti_fisik" id="bukti_fisik" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <label for="file_bukti_fisik" class="block text-sm font-medium text-slate-700">Bukti Fisik (Opsional)</label>
+                    <input type="file" name="file_bukti_fisik" id="file_bukti_fisik" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                     <p class="mt-1 text-xs text-slate-500">Maks. 10MB. Format: PDF, DOC, DOCX, JPG, PNG, ZIP.</p>
-                    @error('bukti_fisik')
+                    @error('file_bukti_fisik')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\KategoriDokumen;
+use App\Enums\Semester;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -19,11 +20,13 @@ class DokumenMutu extends Model
         'nomor_dokumen',
         'file_path',
         'tahun_berlaku',
+        'semester',
         'is_active',
     ];
 
     protected $casts = [
         'kategori'    => KategoriDokumen::class,
+        'semester'    => Semester::class,
         'is_active'   => 'boolean',
         'tahun_berlaku' => 'integer',
     ];

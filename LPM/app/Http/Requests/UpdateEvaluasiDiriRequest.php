@@ -22,7 +22,7 @@ class UpdateEvaluasiDiriRequest extends FormRequest
             'standar_mutu_id'        => ['required', 'exists:standar_mutu,id'],
             'program_studi_id'       => ['required', 'exists:program_studi,id'],
             'tahun_akademik'         => ['required', 'string', 'max:20'],
-            'semester'               => ['required', 'string', Rule::in(array_column(Semester::cases(), 'value'))],
+            'semester'               => ['required', Rule::enum(Semester::class)],
             'capaian_aktual'         => ['nullable', 'string', 'max:255'],
             'deskripsi_ketercapaian' => ['nullable', 'string'],
             'file_bukti_fisik'       => [

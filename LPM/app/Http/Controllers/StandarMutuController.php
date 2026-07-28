@@ -6,6 +6,9 @@ use App\Http\Requests\StoreStandarMutuRequest;
 use App\Http\Requests\UpdateStandarMutuRequest;
 use App\Models\StandarMutu;
 use Illuminate\Http\Request;
+use App\Exports\StandarMutuExport;
+use App\Imports\StandarMutuImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StandarMutuController extends Controller
 {
@@ -67,5 +70,26 @@ class StandarMutuController extends Controller
 
         return redirect()->route('standar-mutu.index')
             ->with('success', 'Standar mutu berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        $this->authorize('manage-standar');
+
+        return Excel::download(new StandarMutuExport, 'standar-mutu.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $this->authorize('manage-standar');
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:5120',
+        ]);
+
+        Excel::import(new StandarMutuImport, $request->file('file'));
+
+        return redirect()->route('standar-mutu.index')
+            ->with('success', 'Data standar mutu berhasil diimport.');
     }
 }

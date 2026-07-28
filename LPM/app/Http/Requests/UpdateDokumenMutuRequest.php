@@ -21,6 +21,7 @@ class UpdateDokumenMutuRequest extends FormRequest
             'judul'          => ['required', 'string', 'max:255'],
             'nomor_dokumen'  => ['nullable', 'string', 'max:100'],
             'tahun_berlaku'  => ['nullable', 'integer', 'digits:4', 'min:2000', 'max:2099'],
+            'semester'       => ['required', Rule::enum(\App\Enums\Semester::class)],
             'is_active'      => ['boolean'],
             'file'           => [
                 'nullable',
@@ -37,6 +38,7 @@ class UpdateDokumenMutuRequest extends FormRequest
             'judul'         => 'Judul',
             'nomor_dokumen' => 'Nomor Dokumen',
             'tahun_berlaku' => 'Tahun Berlaku',
+            'semester'      => 'Semester',
             'is_active'     => 'Status Aktif',
             'file'          => 'File Dokumen',
         ];

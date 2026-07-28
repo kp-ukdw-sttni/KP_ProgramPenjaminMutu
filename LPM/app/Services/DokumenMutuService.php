@@ -69,13 +69,18 @@ class DokumenMutuService
      * Stream a file to the browser for authorized download.
      * Caller is responsible for authorization check before calling this.
      */
-    public function streamFile(DokumenMutu $dokumen): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function streamFile(DokumenMutu $dokumen): \Symfony\Component\HttpFoundation\Response
     {
         abort_unless(
             $dokumen->file_path && Storage::disk(self::DISK)->exists($dokumen->file_path),
             404,
             'File tidak ditemukan.'
         );
+
+        $ext = strtolower(pathinfo($dokumen->file_path, PATHINFO_EXTENSION));
+        if (in_array($ext, ['pdf', 'png', 'jpg', 'jpeg'])) {
+            return Storage::disk(self::DISK)->response($dokumen->file_path);
+        }
 
         return Storage::disk(self::DISK)->download($dokumen->file_path, $dokumen->originalFileName());
     }

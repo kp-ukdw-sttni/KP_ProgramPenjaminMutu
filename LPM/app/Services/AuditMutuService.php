@@ -19,7 +19,7 @@ class AuditMutuService
      */
     public function createFinding(EvaluasiDiri $evaluasi, array $data, User $auditor): AuditMutu
     {
-        abort_unless($evaluasi->isSubmitted(), 422, 'Temuan hanya dapat dibuat untuk evaluasi yang telah disubmit.');
+        abort_unless($evaluasi->isSubmitted() || $evaluasi->isAudited(), 422, 'Temuan hanya dapat dibuat untuk evaluasi yang telah disubmit.');
 
         $finding = AuditMutu::create([
             'evaluasi_diri_id' => $evaluasi->id,

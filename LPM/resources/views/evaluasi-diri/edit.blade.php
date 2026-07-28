@@ -76,8 +76,11 @@
                         <label for="semester" class="block text-sm font-medium text-slate-700">Semester</label>
                         <select name="semester" id="semester" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <option value="">-- Pilih Semester --</option>
-                            <option value="Ganjil" {{ old('semester', $evaluasi->semester) == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                            <option value="Genap" {{ old('semester', $evaluasi->semester) == 'Genap' ? 'selected' : '' }}>Genap</option>
+                            @foreach(\App\Enums\Semester::cases() as $sem)
+                                <option value="{{ $sem->value }}" {{ (old('semester', $evaluasi->semester instanceof \App\Enums\Semester ? $evaluasi->semester->value : $evaluasi->semester) == $sem->value) ? 'selected' : '' }}>
+                                    {{ $sem->label() }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('semester')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -102,16 +105,31 @@
                 </div>
 
                 <div>
-                    <label for="bukti_fisik" class="block text-sm font-medium text-slate-700">Bukti Fisik</label>
-                    <input type="file" name="bukti_fisik" id="bukti_fisik" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    <p class="mt-1 text-xs text-slate-500">Maks. 10MB. Format: PDF, DOC, DOCX, JPG, PNG, ZIP. Upload file baru untuk menimpa yang lama.</p>
-                    @if($evaluasi->bukti_fisik)
-                        <div class="mt-2">
-                            <span class="text-sm text-slate-600">File saat ini:</span>
-                            <a href="{{ Storage::url($evaluasi->bukti_fisik) }}" target="_blank" class="ml-1 text-sm text-indigo-600 hover:text-indigo-900 underline">Lihat file</a>
+                    <label for="file_bukti_fisik" class="block text-sm font-medium text-slate-700">Bukti Fisik</label>
+                    
+                    @if($evaluasi->file_bukti_fisik)
+                        <div class="mb-3 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <div class="font-medium">📁 Berkas saat ini: {{ basename($evaluasi->file_bukti_fisik) }}</div>
+                            @php
+                                $ext = pathinfo($evaluasi->file_bukti_fisik, PATHINFO_EXTENSION);
+                                $isImage = in_array(strtolower($ext), ['jpg', 'jpeg', 'png']);
+                                $isPdf = strtolower($ext) === 'pdf';
+                            @endphp
+                            @if($isImage)
+                                <div class="mt-2 p-1 bg-white border border-slate-200 rounded-lg max-w-xs shadow-sm">
+                                    <img src="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" alt="Pratinjau" class="max-h-40 rounded object-contain mx-auto">
+                                </div>
+                            @elseif($isPdf)
+                                <div class="mt-2 p-1 bg-white border border-slate-200 rounded-lg shadow-sm">
+                                    <iframe src="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" class="w-full h-64 rounded" frameborder="0"></iframe>
+                                </div>
+                            @endif
                         </div>
                     @endif
-                    @error('bukti_fisik')
+
+                    <input type="file" name="file_bukti_fisik" id="file_bukti_fisik" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <p class="mt-1 text-xs text-slate-500">Maks. 10MB. Format: PDF, DOC, DOCX, JPG, PNG, ZIP. Upload file baru untuk menimpa yang lama.</p>
+                    @error('file_bukti_fisik')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

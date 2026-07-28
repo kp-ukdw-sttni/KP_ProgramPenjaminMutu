@@ -66,13 +66,18 @@ class EvaluasiDiriService
         $evaluasi->delete();
     }
 
-    public function streamBuktiFisik(EvaluasiDiri $evaluasi): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function streamBuktiFisik(EvaluasiDiri $evaluasi): \Symfony\Component\HttpFoundation\Response
     {
         abort_unless(
             $evaluasi->file_bukti_fisik && Storage::disk(self::DISK)->exists($evaluasi->file_bukti_fisik),
             404,
             'File bukti fisik tidak ditemukan.'
         );
+
+        $ext = strtolower(pathinfo($evaluasi->file_bukti_fisik, PATHINFO_EXTENSION));
+        if (in_array($ext, ['pdf', 'png', 'jpg', 'jpeg'])) {
+            return Storage::disk(self::DISK)->response($evaluasi->file_bukti_fisik);
+        }
 
         return Storage::disk(self::DISK)->download(
             $evaluasi->file_bukti_fisik,
