@@ -32,9 +32,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         opcache \
         intl
 
-RUN echo "=== MPM modules before fix ===" && ls -la /etc/apache2/mods-enabled/ | grep mpm \
-    && a2dismod --force mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork rewrite \
-    && echo "=== MPM modules after fix ===" && ls -la /etc/apache2/mods-enabled/ | grep mpm
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
+    && cp /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/ \
+    && cp /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/ \
+    && a2enmod rewrite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
