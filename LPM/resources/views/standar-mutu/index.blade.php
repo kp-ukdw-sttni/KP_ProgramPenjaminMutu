@@ -20,20 +20,29 @@
 
         @can('manage-standar')
         <div class="flex items-center gap-2">
-            <button type="button" onclick="openImportModal()" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
-                📁 Import Excel
+            <button type="button" onclick="openImportModal()" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Import Excel
             </button>
-            <a href="{{ route('standar-mutu.export') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-150">
-                📥 Export Excel
+            <a href="{{ route('standar-mutu.export') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-150">
+                <svg class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Export Excel
             </a>
-            <a href="{{ route('standar-mutu.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
-                + Tambah Standar
+            <a href="{{ route('standar-mutu.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                <svg class="w-4 h-4 mr-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Tambah Standar
             </a>
         </div>
         @endcan
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div id="table-container" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
@@ -108,32 +117,35 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Modal Panel -->
-        <div class="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border border-slate-100">
-            <div class="sm:flex sm:items-start">
-                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 text-green-600 sm:mx-0 sm:h-10 sm:w-10">
+        <div class="relative inline-block align-bottom bg-white rounded-xl p-6 sm:p-8 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-100">
+            <div>
+                <!-- Centered Icon -->
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 mb-4">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                     </svg>
                 </div>
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left min-w-0 flex-1">
-                    <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-title">Import Standar Mutu</h3>
-                    <div class="mt-2">
-                        <p class="text-sm text-gray-500">Pilih berkas Excel (.xlsx atau .xls) untuk mengunggah dan melakukan sinkronisasi data Standar Mutu. Sistem akan menggunakan kolom ID untuk melakukan pembaruan (update) data, atau menyisipkan data baru jika ID tidak ditemukan.</p>
+                
+                <!-- Text Header -->
+                <div class="text-center">
+                    <h3 class="text-lg leading-6 font-bold text-slate-800" id="modal-title">Import Standar Mutu</h3>
+                    <p class="text-xs text-slate-500 mt-1.5 px-2">Unggah berkas Excel (.xlsx/.xls) untuk melakukan sinkronisasi data Standar Mutu. ID unik digunakan untuk memperbarui data, sedangkan baris baru akan ditambahkan.</p>
+                </div>
+
+                <!-- Form Block -->
+                <form action="{{ route('standar-mutu.import') }}" method="POST" enctype="multipart/form-data" class="mt-5 space-y-4">
+                    @csrf
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pilih File Excel</label>
+                        <input type="file" name="file" accept=".xlsx,.xls" required class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                     </div>
 
-                    <form action="{{ route('standar-mutu.import') }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-4">
-                        @csrf
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">File Excel (.xlsx/.xls)</label>
-                            <input type="file" name="file" accept=".xlsx,.xls" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 border border-slate-200 rounded-md p-1 bg-slate-50">
-                        </div>
-
-                        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-2">
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-150">Mulai Import</button>
-                            <button type="button" onclick="closeImportModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors duration-150">Batal</button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Actions -->
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="closeImportModal()" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Batal</button>
+                        <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">Mulai Import</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -150,4 +162,53 @@ function closeImportModal() {
 </script>
 @endpush
 @endcan
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    if (!searchInput) return;
+
+    const searchForm = searchInput.closest('form');
+    let timeout = null;
+
+    function performSearch() {
+        const query = searchInput.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('search', query);
+        url.searchParams.delete('page');
+
+        fetch(url.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newTable = doc.getElementById('table-container');
+            if (newTable) {
+                document.getElementById('table-container').innerHTML = newTable.innerHTML;
+            }
+            window.history.pushState({path: url.toString()}, '', url.toString());
+        })
+        .catch(err => console.error(err));
+    }
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(performSearch, 300);
+    });
+
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearTimeout(timeout);
+            performSearch();
+        });
+    }
+});
+</script>
+@endpush
 @endsection

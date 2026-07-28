@@ -51,6 +51,12 @@ class AuditInternalTest extends TestCase
             'status_audit' => StatusAudit::Open->value,
         ]);
 
+        // Verify that the show view renders the finding without error
+        $showResponse = $this->actingAs($auditor)
+            ->get(route('audit-internal.show', $evaluasi));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Terdapat dokumen yang kurang lengkap untuk standar ini.');
+
         // Status of evaluasi_diri should transition to audited
         $this->assertEquals(StatusEvaluasi::Audited, $evaluasi->fresh()->status);
     }

@@ -42,9 +42,9 @@
                     @forelse($evaluasis as $evaluasi)
                         @php
                             $totalTemuan = $evaluasi->auditMutus->count();
-                            $open = $evaluasi->auditMutus->where('status', \App\Enums\StatusTemuan::OPEN)->count();
-                            $inProgress = $evaluasi->auditMutus->where('status', \App\Enums\StatusTemuan::IN_PROGRESS)->count();
-                            $closed = $evaluasi->auditMutus->where('status', \App\Enums\StatusTemuan::CLOSED)->count();
+                            $open = $evaluasi->auditMutus->where('status', \App\Enums\StatusAudit::Open)->count();
+                            $inProgress = $evaluasi->auditMutus->where('status', \App\Enums\StatusAudit::InProgress)->count();
+                            $closed = $evaluasi->auditMutus->where('status', \App\Enums\StatusAudit::Closed)->count();
                         @endphp
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4">{{ $loop->iteration + $evaluasis->firstItem() - 1 }}</td>

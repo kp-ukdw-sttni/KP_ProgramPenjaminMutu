@@ -61,4 +61,15 @@ class AuditMutu extends Model
     {
         return $this->status_audit === StatusAudit::Closed;
     }
+
+    // Accessors for blade views compatibility
+    public function getKategoriAttribute(): KategoriTemuan
+    {
+        return $this->kategori_temuan;
+    }
+
+    public function getStatusAttribute(): StatusAudit
+    {
+        return $this->status_audit;
+    }
 }

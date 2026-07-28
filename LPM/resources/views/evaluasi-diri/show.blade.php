@@ -97,7 +97,7 @@
         <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
             <h3 class="text-lg font-medium leading-6 text-slate-900">Temuan Audit</h3>
             @if(in_array($evaluasi->status->value, ['submitted', 'audited']) && auth()->user()->can('create-audit'))
-                <a href="{{ route('audit-mutu.create', ['evaluasi_id' => $evaluasi->id]) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                <a href="{{ route('audit-internal.temuan.create', $evaluasi) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                     + Tambah Temuan
                 </a>
             @endif
@@ -134,16 +134,16 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('audit-mutu.show', $audit) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
+                            <a href="{{ route('audit-internal.show', $evaluasi) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
                             
                             @if(in_array($audit->status->value, ['open', 'in_progress']) && auth()->user()->can('respond-audit'))
                                 <span class="text-slate-300 mx-2">|</span>
-                                <a href="{{ route('audit-mutu.show', $audit) }}#respond" class="text-blue-600 hover:text-blue-900">Respond</a>
+                                <a href="{{ route('audit-internal.respond.form', $audit) }}" class="text-blue-600 hover:text-blue-900">Respond</a>
                             @endif
                             
                             @if($audit->status->value === 'in_progress' && auth()->user()->can('close-audit'))
                                 <span class="text-slate-300 mx-2">|</span>
-                                <form action="{{ route('audit-mutu.close', $audit) }}" method="POST" class="inline-block" onsubmit="return confirm('Tutup temuan ini?');">
+                                <form action="{{ route('audit-internal.close', $audit) }}" method="POST" class="inline-block" onsubmit="return confirm('Tutup temuan ini?');">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="text-green-600 hover:text-green-900">Close</button>

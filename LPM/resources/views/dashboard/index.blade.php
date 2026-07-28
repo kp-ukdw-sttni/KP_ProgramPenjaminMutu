@@ -147,7 +147,7 @@
                                 @endif
                             </td>
                             <td class="py-3 px-4">{{ $finding->auditor->name ?? '-' }}</td>
-                            <td class="py-3 px-4">{{ $finding->created_at->diffForHumans() }}</td>
+                            <td class="py-3 px-4">{{ $finding->created_at->translatedFormat('d M Y, H:i') }} WIB</td>
                         </tr>
                     @empty
                         <tr>

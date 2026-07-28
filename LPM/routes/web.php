@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ── Dokumen Mutu ──────────────────────────────────────────────────────────
-    Route::resource('dokumen-mutu', DokumenMutuController::class);
+    Route::resource('dokumen-mutu', DokumenMutuController::class)->parameters(['dokumen-mutu' => 'dokumenMutu']);
     Route::get('/dokumen-mutu/{dokumenMutu}/download', [DokumenMutuController::class, 'download'])
         ->name('dokumen-mutu.download');
 
@@ -33,10 +33,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('standar-mutu.export');
     Route::post('/standar-mutu/import', [StandarMutuController::class, 'import'])
         ->name('standar-mutu.import');
-    Route::resource('standar-mutu', StandarMutuController::class);
+    Route::resource('standar-mutu', StandarMutuController::class)->parameters(['standar-mutu' => 'standarMutu']);
 
     // ── Evaluasi Diri ─────────────────────────────────────────────────────────
-    Route::resource('evaluasi-diri', EvaluasiDiriController::class);
+    Route::resource('evaluasi-diri', EvaluasiDiriController::class)->parameters(['evaluasi-diri' => 'evaluasiDiri']);
     Route::post('/evaluasi-diri/{evaluasiDiri}/submit', [EvaluasiDiriController::class, 'submit'])
         ->name('evaluasi-diri.submit');
     Route::get('/evaluasi-diri/{evaluasiDiri}/download-bukti', [EvaluasiDiriController::class, 'downloadBukti'])
@@ -72,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ── Admin-only: Manajemen Pengguna ────────────────────────────────────────
     Route::middleware('role:superadmin')->group(function () {
         Route::resource('users', UserManagementController::class);
-        Route::resource('fakultas', FakultasController::class);
-        Route::resource('program-studi', ProgramStudiController::class);
+        Route::resource('fakultas', FakultasController::class)->parameters(['fakultas' => 'fakultas']);
+        Route::resource('program-studi', ProgramStudiController::class)->parameters(['program-studi' => 'programStudi']);
     });
 });

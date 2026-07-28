@@ -24,21 +24,21 @@
             </div>
         </div>
 
-        <form action="{{ route('audit-internal.store-temuan') }}" method="POST" class="p-6 space-y-6">
+        <form action="{{ route('audit-internal.temuan.store', $evaluasi) }}" method="POST" class="p-6 space-y-6">
             @csrf
             <input type="hidden" name="evaluasi_diri_id" value="{{ $evaluasi->id }}">
 
             <div>
-                <label for="kategori" class="block text-sm font-medium text-slate-700 mb-1">Kategori Temuan</label>
-                <select name="kategori" id="kategori" required class="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <label for="kategori_temuan" class="block text-sm font-medium text-slate-700 mb-1">Kategori Temuan</label>
+                <select name="kategori_temuan" id="kategori_temuan" required class="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="">Pilih Kategori</option>
                     @foreach(\App\Enums\KategoriTemuan::cases() as $kategori)
-                        <option value="{{ $kategori->value }}" {{ old('kategori') == $kategori->value ? 'selected' : '' }}>
+                        <option value="{{ $kategori->value }}" {{ old('kategori_temuan') == $kategori->value ? 'selected' : '' }}>
                             {{ $kategori->label() }}
                         </option>
                     @endforeach
                 </select>
-                @error('kategori')
+                @error('kategori_temuan')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>

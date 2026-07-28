@@ -43,7 +43,7 @@
                 </span>
                 
                 @if($evaluasi->hasFile())
-                    <a href="{{ route('evaluasi-diri.download', $evaluasi->id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a href="{{ route('evaluasi-diri.download-bukti', $evaluasi) }}" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <svg class="-ml-1 mr-2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -65,8 +65,8 @@
                 <div class="flex gap-2 mt-1">
                     @php
                         $kts = $evaluasi->auditMutus->where('kategori', \App\Enums\KategoriTemuan::KTS)->count();
-                        $ob = $evaluasi->auditMutus->where('kategori', \App\Enums\KategoriTemuan::OBSERVASI)->count();
-                        $peluang = $evaluasi->auditMutus->where('kategori', \App\Enums\KategoriTemuan::PELUANG_PENINGKATAN)->count();
+                        $ob = $evaluasi->auditMutus->where('kategori', \App\Enums\KategoriTemuan::OB)->count();
+                        $peluang = $evaluasi->auditMutus->where('kategori', \App\Enums\KategoriTemuan::PeluangPeningkatan)->count();
                     @endphp
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">{{ $kts }} KTS</span>
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">{{ $ob }} OB</span>
@@ -75,8 +75,8 @@
             </div>
             
             @can('create-audit')
-                @if(in_array($evaluasi->status->value, [\App\Enums\StatusEvaluasi::SUBMITTED->value, \App\Enums\StatusEvaluasi::AUDITED->value]))
-                    <a href="{{ route('audit-internal.create-temuan', $evaluasi->id) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                @if(in_array($evaluasi->status->value, [\App\Enums\StatusEvaluasi::Submitted->value, \App\Enums\StatusEvaluasi::Audited->value]))
+                    <a href="{{ route('audit-internal.temuan.create', $evaluasi) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         + Tambah Temuan
                     </a>
                 @endif
@@ -125,15 +125,15 @@
 
                         <div class="flex justify-end gap-2 mt-2">
                             @can('respond-audit')
-                                @if($temuan->status !== \App\Enums\StatusTemuan::CLOSED && auth()->user()->program_studi_id === $evaluasi->program_studi_id)
-                                    <a href="{{ route('audit-internal.respond', $temuan->id) }}" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                                @if($temuan->status !== \App\Enums\StatusAudit::Closed && auth()->user()->program_studi_id === $evaluasi->program_studi_id)
+                                    <a href="{{ route('audit-internal.respond.form', $temuan) }}" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                                         Balas dengan CAPA
                                     </a>
                                 @endif
                             @endcan
 
                             @can('close-audit')
-                                @if($temuan->status === \App\Enums\StatusTemuan::IN_PROGRESS)
+                                @if($temuan->status === \App\Enums\StatusAudit::InProgress)
                                     <form action="{{ route('audit-internal.close', $temuan->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menutup temuan ini?');">
                                         @csrf
                                         @method('PATCH')

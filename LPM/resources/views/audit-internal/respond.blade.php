@@ -43,7 +43,7 @@
 
     <!-- Form for CAPA -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <form action="{{ route('audit-internal.update-respond', $finding->id) }}" method="POST" class="p-6 space-y-6">
+        <form action="{{ route('audit-internal.respond', $finding) }}" method="POST" class="p-6 space-y-6">
             @csrf
             @method('PATCH')
 
