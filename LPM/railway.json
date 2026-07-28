@@ -1,0 +1,13 @@
+{
+    "$schema": "https://railway.app/railway.schema.json",
+    "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "Dockerfile"
+    },
+    "deploy": {
+        "startCommand": "php artisan migrate --force && php artisan db:seed --force || true && apache2-foreground",
+        "healthcheckPath": "/login",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+    }
+}
