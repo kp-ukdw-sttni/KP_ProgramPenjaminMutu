@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     libpq-dev \
+    libicu-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,11 +29,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         bcmath \
         gd \
         zip \
-        opcache
+        opcache \
+        intl
 
-RUN a2enmod rewrite \
-    && a2dismod mpm_event \
-    && a2enmod mpm_prefork
+RUN a2dismod -f mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork; a2enmod rewrite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
