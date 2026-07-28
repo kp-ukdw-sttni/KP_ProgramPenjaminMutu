@@ -29,8 +29,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         zip \
         opcache
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite, fix MPM conflict (disable mpm_event, enable mpm_prefork)
+RUN a2enmod rewrite \
+    && a2dismod mpm_event \
+    && a2enmod mpm_prefork
 
 # Set working directory
 WORKDIR /var/www/html
@@ -71,5 +73,5 @@ RUN php artisan config:cache || true \
 
 EXPOSE 80
 
-# Run migration then start Apache
-CMD php artisan migrate --force && php artisan db:seed --class=AdminUserSeeder --force || true && apache2-foreground
+# Run migration + full seeder (RolePermissionSeeder first, then users) then start Apache
+CMD php artisan migrate --force && php artisan db:seed --force || true && apache2-foreground
