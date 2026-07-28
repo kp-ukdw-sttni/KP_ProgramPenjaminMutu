@@ -1,6 +1,5 @@
 FROM php:8.2-apache
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -14,13 +13,15 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
+    libpq-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
+        pdo_pgsql \
+        pgsql \
         mbstring \
         exif \
         pcntl \
@@ -29,49 +30,27 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         zip \
         opcache
 
-# Enable Apache mod_rewrite, fix MPM conflict (disable mpm_event, enable mpm_prefork)
 RUN a2enmod rewrite \
     && a2dismod mpm_event \
     && a2enmod mpm_prefork
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application files
+WORKDIR /var/www/html
 COPY . .
 
-# Install PHP dependencies
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction
-
-# Install Node.js dependencies and build assets
 RUN npm install && npm run build
 
-# Set Apache document root to /public
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
 
-# Configure Apache to allow .htaccess overrides
-RUN echo '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>' \
-    > /etc/apache2/conf-available/laravel.conf \
-    && a2enconf laravel
-
-# Create storage symlink and set permissions
-RUN php artisan storage:link || true \
-    && chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Cache config for production
-RUN php artisan config:cache || true \
-    && php artisan route:cache || true \
-    && php artisan view:cache || true
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
-# Run migration + full seeder (RolePermissionSeeder first, then users) then start Apache
-CMD php artisan migrate --force && php artisan db:seed --force || true && apache2-foreground
+ENTRYPOINT ["/entrypoint.sh"]
