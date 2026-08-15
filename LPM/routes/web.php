@@ -9,6 +9,7 @@ use App\Http\Controllers\ProgramStudiController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PengurusLpmController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public / Auth routes (from Breeze) ────────────────────────────────────────
@@ -68,6 +69,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ── Kepengurusan LPM ──────────────────────────────────────────────────────
+    Route::resource('pengurus-lpm', PengurusLpmController::class)->parameters(['pengurus-lpm' => 'pengurusLpm']);
 
     // ── Admin-only: Manajemen Pengguna ────────────────────────────────────────
     Route::middleware('role:superadmin')->group(function () {

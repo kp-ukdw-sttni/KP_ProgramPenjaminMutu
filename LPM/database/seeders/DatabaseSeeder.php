@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             ProgramStudiSeeder::class,   // STTNI-specific: S1 Teologi, S1 PAK, S2 Teologi
             StandarMutuSeeder::class,    // 24 SN-Dikti standards
             AdminUserSeeder::class,      // Demo users (depends on prodi + roles)
+            PengurusLpmSeeder::class,
         ]);
     }
 }

@@ -18,7 +18,7 @@ class AdminUserSeeder extends Seeder
 
         // ── Superadmin / Ketua LPM ────────────────────────────────────────────
         $superadmin = User::firstOrCreate(
-            ['email' => 'ketua.lpm@sttni.ac.id'],
+            ['email' => 'lpm@sttni.ac.id'],
             [
                 'name'     => 'Ketua LPM STTNI',
                 'password' => Hash::make('password123'),

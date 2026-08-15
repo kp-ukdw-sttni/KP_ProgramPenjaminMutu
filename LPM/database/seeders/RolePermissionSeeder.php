@@ -27,6 +27,7 @@ class RolePermissionSeeder extends Seeder
             'respond-audit',
             'close-audit',
             'view-dashboard',
+            'manage-kepengurusan',
         ];
 
         foreach ($permissions as $perm) {
@@ -40,6 +41,10 @@ class RolePermissionSeeder extends Seeder
         /** Superadmin / Ketua LPM — full access */
         $superadmin = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
         $superadmin->syncPermissions($permissions);
+
+        /** Admin — management access */
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $admin->syncPermissions(['manage-kepengurusan']);
 
         /** Auditor (Tim AMI) */
         $auditor = Role::firstOrCreate(['name' => 'auditor', 'guard_name' => 'web']);
