@@ -25,11 +25,13 @@ class EvaluasiDiri extends Model
         'deskripsi_ketercapaian',
         'file_bukti_fisik',
         'status',
+        'nilai',
     ];
 
     protected $casts = [
         'semester' => Semester::class,
         'status'   => StatusEvaluasi::class,
+        'nilai'    => 'integer',
     ];
 
     // -----------------------------------------------------------------------
@@ -70,8 +72,41 @@ class EvaluasiDiri extends Model
         return $this->status === StatusEvaluasi::Submitted;
     }
 
+    public function isRevisi(): bool
+    {
+        return $this->status === StatusEvaluasi::Revisi;
+    }
+
     public function isAudited(): bool
     {
         return $this->status === StatusEvaluasi::Audited;
+    }
+
+    /**
+     * Label for nilai (1-4 scoring system).
+     */
+    public function nilaiLabel(): string
+    {
+        return match ($this->nilai) {
+            1 => '1 — Sangat Kurang',
+            2 => '2 — Kurang',
+            3 => '3 — Baik',
+            4 => '4 — Sangat Baik',
+            default => '—',
+        };
+    }
+
+    /**
+     * Badge color for nilai display.
+     */
+    public function nilaiColor(): string
+    {
+        return match ($this->nilai) {
+            1 => 'bg-red-100 text-red-700',
+            2 => 'bg-amber-100 text-amber-700',
+            3 => 'bg-blue-100 text-blue-700',
+            4 => 'bg-green-100 text-green-700',
+            default => 'bg-gray-100 text-gray-500',
+        };
     }
 }

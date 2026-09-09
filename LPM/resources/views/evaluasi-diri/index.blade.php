@@ -24,11 +24,11 @@
             <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-800 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 w-full sm:w-auto">Filter</button>
         </form>
 
-        @can('create-evaluasi')
+        @role('auditee|Auditee')
         <a href="{{ route('evaluasi-diri.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
             + Tambah Evaluasi
         </a>
-        @endcan
+        @endrole
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -55,14 +55,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                             {{ $evaluasi->programStudi->nama_prodi ?? '-' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                            {{ $evaluasi->standarMutu->kode_standar ?? '-' }}
+                        <td class="px-6 py-4 text-sm text-slate-700">
+                            {{ $evaluasi->standarMutu->kode_standar ?? '-' }} - {{ $evaluasi->standarMutu->nama_standar ?? '-' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                             {{ $evaluasi->tahun_akademik }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                            {{ $evaluasi->semester }}
+                            {{ $evaluasi->semester->value }}
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-700 max-w-xs truncate">
                             {{ $evaluasi->capaian_aktual }}
@@ -76,7 +76,7 @@
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('evaluasi-diri.show', $evaluasi) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
                                 
-                                @if($evaluasi->status->value === 'draft' && auth()->user()->can('create-evaluasi'))
+                                @if($evaluasi->status->value === 'draft' && auth()->user()->hasRole(['auditee', 'Auditee']))
                                     <span class="text-slate-300">|</span>
                                     <a href="{{ route('evaluasi-diri.edit', $evaluasi) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                     
@@ -112,3 +112,5 @@
     </div>
 </div>
 @endsection
+
+

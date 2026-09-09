@@ -76,9 +76,9 @@ class AuthenticationRbacTest extends TestCase
     }
 
     /**
-     * Test that a Superadmin has full CRUD access across all endpoints.
+     * Test that a Superadmin has administrative CRUD access.
      */
-    public function test_superadmin_has_full_crud_access(): void
+    public function test_superadmin_has_admin_crud_access(): void
     {
         $superadmin = User::factory()->create();
         $superadmin->assignRole('superadmin');
@@ -96,5 +96,55 @@ class AuthenticationRbacTest extends TestCase
         $this->actingAs($superadmin)
             ->get(route('standar-mutu.create'))
             ->assertStatus(200);
+    }
+
+    /**
+     * Test Superadmin cannot create evaluasi without Auditee role.
+     */
+    public function test_superadmin_without_auditee_role_cannot_create_evaluasi(): void
+    {
+        $superadmin = User::factory()->create();
+        $superadmin->assignRole('superadmin');
+
+        $this->actingAs($superadmin)
+            ->get(route('evaluasi-diri.create'))
+            ->assertStatus(403);
+    }
+
+    /**
+     * Test Superadmin cannot create audit finding without Auditor role.
+     */
+    public function test_superadmin_without_auditor_role_cannot_create_finding(): void
+    {
+        $superadmin = User::factory()->create();
+        $superadmin->assignRole('superadmin');
+
+        $evaluasi = \App\Models\EvaluasiDiri::factory()->create([
+            'status' => \App\Enums\StatusEvaluasi::Submitted,
+        ]);
+
+        $this->actingAs($superadmin)
+            ->get(route('audit-internal.temuan.create', $evaluasi))
+            ->assertStatus(403);
+    }
+
+    /**
+     * Test Standar Mutu evaluation count increments when evaluasi is added.
+     */
+    public function test_standar_mutu_evaluation_count_increments_when_evaluasi_added(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('superadmin');
+        $standar = StandarMutu::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('standar-mutu.index'));
+        $response->assertStatus(200);
+        $response->assertSee('0 Evaluasi');
+
+        \App\Models\EvaluasiDiri::factory()->create(['standar_mutu_id' => $standar->id]);
+
+        $response2 = $this->actingAs($user)->get(route('standar-mutu.index'));
+        $response2->assertStatus(200);
+        $response2->assertSee('1 Evaluasi');
     }
 }

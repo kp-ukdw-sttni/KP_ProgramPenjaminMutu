@@ -46,7 +46,7 @@
                             $inProgress = $evaluasi->auditMutus->where('status', \App\Enums\StatusAudit::InProgress)->count();
                             $closed = $evaluasi->auditMutus->where('status', \App\Enums\StatusAudit::Closed)->count();
                         @endphp
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4">{{ $loop->iteration + $evaluasis->firstItem() - 1 }}</td>
                             <td class="px-6 py-4 font-medium text-slate-900">{{ $evaluasi->programStudi->nama_prodi }}</td>
                             <td class="px-6 py-4">
@@ -95,3 +95,5 @@
     </div>
 </div>
 @endsection
+
+

@@ -23,7 +23,7 @@
                     {{ $evaluasi->status->label() }}
                 </span>
                 
-                @if($evaluasi->status->value === 'draft' && auth()->user()->can('create-evaluasi'))
+                @if($evaluasi->status->value === 'draft' && auth()->user()->hasRole(['auditee', 'Auditee']))
                     <form action="{{ route('evaluasi-diri.submit', $evaluasi) }}" method="POST" onsubmit="return confirm('Yakin ingin submit evaluasi ini?');">
                         @csrf
                         <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
@@ -96,7 +96,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
             <h3 class="text-lg font-medium leading-6 text-slate-900">Temuan Audit</h3>
-            @if(in_array($evaluasi->status->value, ['submitted', 'audited']) && auth()->user()->can('create-audit'))
+            @if(in_array($evaluasi->status->value, ['submitted', 'audited']) && auth()->user()->hasRole(['auditor', 'Auditor']))
                 <a href="{{ route('audit-internal.temuan.create', $evaluasi) }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                     + Tambah Temuan
                 </a>
@@ -123,7 +123,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-900 max-w-md truncate">
-                            {{ $audit->deskripsi_temuan }}
+                            {!! $audit->deskripsi_temuan !!}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                             {{ $audit->auditor->name ?? '-' }}
@@ -138,7 +138,7 @@
                             
                             @if(in_array($audit->status->value, ['open', 'in_progress']) && auth()->user()->can('respond-audit'))
                                 <span class="text-slate-300 mx-2">|</span>
-                                <a href="{{ route('audit-internal.respond.form', $audit) }}" class="text-blue-600 hover:text-blue-900">Respond</a>
+                                <a href="{{ route('audit-internal.respond.form', $audit) }}" class="text-brand-600 hover:text-brand-900">Respond</a>
                             @endif
                             
                             @if($audit->status->value === 'in_progress' && auth()->user()->can('close-audit'))
@@ -164,3 +164,5 @@
     </div>
 </div>
 @endsection
+
+

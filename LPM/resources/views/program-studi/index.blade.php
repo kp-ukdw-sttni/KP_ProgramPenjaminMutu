@@ -31,7 +31,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                     @forelse($prodis as $prodi)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4">{{ $loop->iteration + $prodis->firstItem() - 1 }}</td>
                             <td class="px-6 py-4 font-medium text-slate-900">{{ $prodi->nama_prodi }}</td>
                             <td class="px-6 py-4 text-slate-600">{{ $prodi->fakultas->nama_fakultas ?? '-' }}</td>
@@ -63,3 +63,5 @@
     </div>
 </div>
 @endsection
+
+

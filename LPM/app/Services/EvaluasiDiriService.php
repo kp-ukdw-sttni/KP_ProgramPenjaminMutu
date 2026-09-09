@@ -36,7 +36,7 @@ class EvaluasiDiriService
     }
 
     /**
-     * Transition status from draft → submitted.
+     * Transition status from draft → submitted (Menunggu Review).
      */
     public function submit(EvaluasiDiri $evaluasi): EvaluasiDiri
     {
@@ -48,11 +48,34 @@ class EvaluasiDiriService
     }
 
     /**
-     * Transition status from submitted → audited (called after audit is closed).
+     * Transition status to revisi. Used by auditor when document needs correction.
+     */
+    public function markRevisi(EvaluasiDiri $evaluasi): EvaluasiDiri
+    {
+        $evaluasi->update(['status' => StatusEvaluasi::Revisi->value]);
+
+        return $evaluasi;
+    }
+
+    /**
+     * Transition status from submitted/revisi → audited (Selesai).
+     * Called automatically when all findings are closed.
      */
     public function markAudited(EvaluasiDiri $evaluasi): EvaluasiDiri
     {
         $evaluasi->update(['status' => StatusEvaluasi::Audited->value]);
+
+        return $evaluasi;
+    }
+
+    /**
+     * Set the auditor's score (nilai) for an evaluasi. Score must be 1–4.
+     */
+    public function setNilai(EvaluasiDiri $evaluasi, int $nilai): EvaluasiDiri
+    {
+        abort_unless(in_array($nilai, [1, 2, 3, 4]), 422, 'Nilai harus antara 1 dan 4.');
+
+        $evaluasi->update(['nilai' => $nilai]);
 
         return $evaluasi;
     }

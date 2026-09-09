@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'e-SPMI') }} — @yield('title', 'Dashboard')</title>
@@ -74,9 +74,29 @@
             Kepengurusan LPM
         </a>
 
-        {{-- ── PPEPP: PENETAPAN ──────────────────────────────────────────── --}}
+        {{-- -- Monitoring Evaluasi ------------------------------------------ --}}
         <div class="pt-3 pb-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Penetapan</p>
+            <p class="px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Monitoring Evaluasi</p>
+        </div>
+
+        <a href="{{ route('evaluasi-diri.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 {{ request()->routeIs('evaluasi-diri.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' }}">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Instrumen Penilaian
+        </a>
+
+        <a href="{{ route('audit-internal.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 {{ request()->routeIs('audit-internal.index') || request()->routeIs('audit-internal.show') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' }}">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Daftar Temuan
+        </a>
+
+        <a href="{{ route('audit-internal.rekap') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 {{ request()->routeIs('audit-internal.rekap') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' }}">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Rekapitulasi
+        </a>
+
+        {{-- -- Dokumen ---------------------------------------------------- --}}
+        <div class="pt-3 pb-1">
+            <p class="px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Dokumen</p>
         </div>
 
         <a href="{{ route('dokumen-mutu.index') }}"
@@ -97,38 +117,6 @@
                       d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
             </svg>
             Standar Mutu
-        </a>
-
-        {{-- ── PPEPP: PELAKSANAAN & EVALUASI ───────────────────────────────── --}}
-        <div class="pt-3 pb-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Pelaksanaan & Evaluasi</p>
-        </div>
-
-        <a href="{{ route('evaluasi-diri.index') }}"
-           class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150
-                  {{ request()->routeIs('evaluasi-diri.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' }}">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-            Evaluasi Diri
-        </a>
-
-        {{-- ── PPEPP: PENGENDALIAN & PENINGKATAN ───────────────────────────── --}}
-        <div class="pt-3 pb-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Pengendalian & Peningkatan</p>
-        </div>
-
-        <a href="{{ route('audit-internal.index') }}"
-           class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150
-                  {{ request()->routeIs('audit-internal.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' }}">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-            Audit Internal (AMI)
         </a>
 
         {{-- ── Admin Only ───────────────────────────────────────────────────── --}}
@@ -285,3 +273,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
+

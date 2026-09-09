@@ -14,7 +14,7 @@ class StandarMutuController extends Controller
 {
     public function index(Request $request)
     {
-        $query = StandarMutu::query();
+        $query = StandarMutu::withCount(['evaluasiDiris', 'evaluasiDiris as evaluasi_diri_count']);
 
         if ($request->filled('search')) {
             $query->where('nama_standar', 'like', '%' . $request->search . '%')

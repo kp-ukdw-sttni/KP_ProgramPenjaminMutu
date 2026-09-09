@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAuditMutuRequest;
 use App\Http\Requests\UpdateTindakLanjutRequest;
 use App\Models\AuditMutu;
 use App\Models\EvaluasiDiri;
+use App\Models\ProgramStudi;
 use App\Services\AuditMutuService;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class AuditInternalController extends Controller
     ) {}
 
     /**
-     * List all submitted evaluasi_diri available for auditing.
+     * List all submitted/audited evaluasi_diri available for the Monev process.
      * Auditors see all; auditees see only their prodi.
      */
     public function index(Request $request)
@@ -39,13 +40,26 @@ class AuditInternalController extends Controller
     }
 
     /**
+     * Rekapitulasi: summary of evaluasi status and findings per prodi.
+     */
+    public function rekap(Request $request)
+    {
+        $this->authorize('view-evaluasi');
+
+        $prodis = ProgramStudi::with([
+            'evaluasiDiris.auditMutus',
+        ])->orderBy('nama_prodi')->get();
+
+        return view('audit-internal.rekap', compact('prodis'));
+    }
+
+    /**
      * Show a single evaluasi with all its findings and CAPA thread.
      */
     public function show(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('view-evaluasi');
 
-        // Eager load everything to avoid N+1
         $evaluasiDiri->load([
             'standarMutu',
             'programStudi.fakultas',
@@ -56,29 +70,66 @@ class AuditInternalController extends Controller
     }
 
     /**
-     * Show the form to add a new temuan for an evaluasi.
+     * Show the Alpine.js multi-row form to add new temuan for an evaluasi.
      */
     public function createTemuan(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('create-audit');
         abort_unless($evaluasiDiri->isSubmitted() || $evaluasiDiri->isAudited(), 403, 'Evaluasi belum disubmit.');
 
+        $evaluasiDiri->load(['standarMutu', 'programStudi']);
+
         return view('audit-internal.create-temuan', ['evaluasi' => $evaluasiDiri]);
     }
 
     /**
-     * Auditor stores a new finding.
+     * Auditor stores multiple findings at once.
+     * Accepts: temuan[*][kategori_temuan], temuan[*][deskripsi_temuan], temuan[*][rekomendasi]
+     * Also optionally accepts: nilai (1-4) for the evaluasi document.
      */
-    public function storeTemuan(StoreAuditMutuRequest $request, EvaluasiDiri $evaluasiDiri)
+    public function storeTemuan(Request $request, EvaluasiDiri $evaluasiDiri)
     {
-        $this->service->createFinding(
+        $this->authorize('create-audit');
+
+        $validated = $request->validate([
+            'temuan'                          => 'required|array|min:1',
+            'temuan.*.kategori_temuan'        => 'required|string|in:KTS,OB,Peluang_Peningkatan',
+            'temuan.*.deskripsi_temuan'       => 'required|string|min:10',
+            'temuan.*.rekomendasi'            => 'nullable|string',
+            'nilai'                           => 'nullable|integer|min:1|max:4',
+        ]);
+
+        $rows = $request->input('temuan');
+        $this->service->createMultipleFindings(
             $evaluasiDiri,
-            $request->validated(),
+            $rows,
             $request->user()
         );
 
+        // Optionally set nilai
+        if (! empty($validated['nilai'])) {
+            app(\App\Services\EvaluasiDiriService::class)->setNilai($evaluasiDiri, (int) $validated['nilai']);
+        }
+
         return redirect()->route('audit-internal.show', $evaluasiDiri)
-            ->with('success', 'Temuan audit berhasil dicatat.');
+            ->with('success', count($rows) . ' temuan audit berhasil dicatat.');
+    }
+
+    /**
+     * Auditor sets the nilai (score 1–4) for an evaluasi document.
+     */
+    public function setNilai(Request $request, EvaluasiDiri $evaluasiDiri)
+    {
+        $this->authorize('create-audit');
+
+        $validated = $request->validate([
+            'nilai' => 'required|integer|min:1|max:4',
+        ]);
+
+        app(\App\Services\EvaluasiDiriService::class)->setNilai($evaluasiDiri, $validated['nilai']);
+
+        return redirect()->route('audit-internal.show', $evaluasiDiri)
+            ->with('success', 'Nilai berhasil disimpan.');
     }
 
     /**
@@ -95,21 +146,32 @@ class AuditInternalController extends Controller
     }
 
     /**
-     * Auditee submits CAPA for a finding.
+     * Auditee submits CAPA (akar_masalah + tindak_lanjut + optional bukti file).
      */
-    public function respond(UpdateTindakLanjutRequest $request, AuditMutu $auditMutu)
+    public function respond(Request $request, AuditMutu $auditMutu)
     {
-        $this->service->submitTindakLanjut(
+        $this->authorize('respond-audit');
+
+        $validated = $request->validate([
+            'akar_masalah'   => 'required|string|min:10',
+            'tindak_lanjut'  => 'required|string|min:20',
+            'bukti_perbaikan'=> 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+        ]);
+
+        $this->service->submitTindakLanjutLengkap(
             $auditMutu,
-            $request->validated()['rencana_tindak_lanjut']
+            $validated['akar_masalah'],
+            $validated['tindak_lanjut'],
+            $request->file('bukti_perbaikan')
         );
 
         return redirect()->route('audit-internal.show', $auditMutu->evaluasi_diri_id)
-            ->with('success', 'Rencana tindak lanjut berhasil disimpan.');
+            ->with('success', 'Tindak lanjut berhasil disimpan.');
     }
 
     /**
      * Auditor closes a finding after verifying CAPA.
+     * Auto-marks evaluasi as Selesai when all findings are closed.
      */
     public function close(AuditMutu $auditMutu)
     {
@@ -117,6 +179,16 @@ class AuditInternalController extends Controller
         $this->service->closeFinding($auditMutu);
 
         return redirect()->route('audit-internal.show', $auditMutu->evaluasi_diri_id)
-            ->with('success', 'Temuan berhasil ditutup (Closed).');
+            ->with('success', 'Temuan berhasil ditutup.');
+    }
+
+    /**
+     * Download bukti perbaikan file.
+     */
+    public function downloadBuktiPerbaikan(AuditMutu $auditMutu)
+    {
+        $this->authorize('view-evaluasi');
+
+        return $this->service->streamBuktiPerbaikan($auditMutu);
     }
 }

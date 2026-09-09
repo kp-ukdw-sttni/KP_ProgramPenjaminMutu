@@ -24,4 +24,9 @@ class StandarMutu extends Model
     {
         return $this->hasMany(EvaluasiDiri::class, 'standar_mutu_id');
     }
+
+    public function evaluasi_diri(): HasMany
+    {
+        return $this->evaluasiDiris();
+    }
 }

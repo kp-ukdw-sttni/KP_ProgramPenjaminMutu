@@ -36,33 +36,54 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('standar-mutu.import');
     Route::resource('standar-mutu', StandarMutuController::class)->parameters(['standar-mutu' => 'standarMutu']);
 
-    // ── Evaluasi Diri ─────────────────────────────────────────────────────────
-    Route::resource('evaluasi-diri', EvaluasiDiriController::class)->parameters(['evaluasi-diri' => 'evaluasiDiri']);
-    Route::post('/evaluasi-diri/{evaluasiDiri}/submit', [EvaluasiDiriController::class, 'submit'])
-        ->name('evaluasi-diri.submit');
+    // ── Evaluasi Diri (Instrumen Penilaian) ───────────────────────────────────
+    Route::get('/evaluasi-diri', [EvaluasiDiriController::class, 'index'])->name('evaluasi-diri.index');
+
+    // Strictly Auditee role for creating/modifying/submitting evaluasi
+    Route::middleware(['role:auditee|Auditee'])->group(function () {
+        Route::get('/evaluasi-diri/create', [EvaluasiDiriController::class, 'create'])->name('evaluasi-diri.create');
+        Route::post('/evaluasi-diri', [EvaluasiDiriController::class, 'store'])->name('evaluasi-diri.store');
+        Route::get('/evaluasi-diri/{evaluasiDiri}/edit', [EvaluasiDiriController::class, 'edit'])->name('evaluasi-diri.edit');
+        Route::put('/evaluasi-diri/{evaluasiDiri}', [EvaluasiDiriController::class, 'update'])->name('evaluasi-diri.update');
+        Route::patch('/evaluasi-diri/{evaluasiDiri}', [EvaluasiDiriController::class, 'update']);
+        Route::delete('/evaluasi-diri/{evaluasiDiri}', [EvaluasiDiriController::class, 'destroy'])->name('evaluasi-diri.destroy');
+        Route::post('/evaluasi-diri/{evaluasiDiri}/submit', [EvaluasiDiriController::class, 'submit'])
+            ->name('evaluasi-diri.submit');
+    });
+
+    // General viewing routes for specific evaluasi (after /create)
+    Route::get('/evaluasi-diri/{evaluasiDiri}', [EvaluasiDiriController::class, 'show'])->name('evaluasi-diri.show');
     Route::get('/evaluasi-diri/{evaluasiDiri}/download-bukti', [EvaluasiDiriController::class, 'downloadBukti'])
         ->name('evaluasi-diri.download-bukti');
 
-    // ── Audit Internal ────────────────────────────────────────────────────────
+    // ── Audit Internal (Monev) ────────────────────────────────────────────────
     Route::prefix('audit-internal')->name('audit-internal.')->group(function () {
         Route::get('/', [AuditInternalController::class, 'index'])->name('index');
+        Route::get('/rekap', [AuditInternalController::class, 'rekap'])->name('rekap');
+        Route::get('/finding/{auditMutu}/bukti', [AuditInternalController::class, 'downloadBuktiPerbaikan'])
+            ->name('bukti.download');
+
+        // Strictly Auditor role for creating temuan, closing temuan, setting nilai
+        Route::middleware(['role:auditor|Auditor'])->group(function () {
+            Route::get('/{evaluasiDiri}/temuan/create', [AuditInternalController::class, 'createTemuan'])
+                ->name('temuan.create');
+            Route::post('/{evaluasiDiri}/temuan', [AuditInternalController::class, 'storeTemuan'])
+                ->name('temuan.store');
+            Route::post('/{evaluasiDiri}/nilai', [AuditInternalController::class, 'setNilai'])
+                ->name('setNilai');
+            Route::patch('/finding/{auditMutu}/close', [AuditInternalController::class, 'close'])
+                ->name('close');
+        });
+
+        // Strictly Auditee role for responding with CAPA
+        Route::middleware(['role:auditee|Auditee'])->group(function () {
+            Route::get('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respondForm'])
+                ->name('respond.form');
+            Route::patch('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respond'])
+                ->name('respond');
+        });
+
         Route::get('/{evaluasiDiri}', [AuditInternalController::class, 'show'])->name('show');
-
-        // Auditor creates a temuan
-        Route::get('/{evaluasiDiri}/temuan/create', [AuditInternalController::class, 'createTemuan'])
-            ->name('temuan.create');
-        Route::post('/{evaluasiDiri}/temuan', [AuditInternalController::class, 'storeTemuan'])
-            ->name('temuan.store');
-
-        // Auditee responds with CAPA
-        Route::get('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respondForm'])
-            ->name('respond.form');
-        Route::patch('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respond'])
-            ->name('respond');
-
-        // Auditor closes a finding
-        Route::patch('/finding/{auditMutu}/close', [AuditInternalController::class, 'close'])
-            ->name('close');
     });
 
     // ── Profile ───────────────────────────────────────────────────────────────

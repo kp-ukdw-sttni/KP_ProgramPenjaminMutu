@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="p-3 flex-1 flex flex-col justify-between">
                                         <div>
-                                            <div class="text-xs text-blue-600 font-semibold uppercase tracking-wider">{{ $ketua->jabatan }}</div>
+                                            <div class="text-xs text-brand-600 font-semibold uppercase tracking-wider">{{ $ketua->jabatan }}</div>
                                             <div class="text-sm font-bold text-gray-800 mt-1 line-clamp-2" title="{{ $ketua->nama_lengkap }}">{{ $ketua->nama_lengkap }}</div>
                                             @if($ketua->email)
                                                 <div class="text-xs text-gray-500 mt-1">{{ $ketua->email }}</div>
@@ -114,7 +114,7 @@
                                                     </div>
                                                     <div class="p-3 flex-1 flex flex-col justify-between">
                                                         <div>
-                                                            <div class="text-xs text-blue-600 font-semibold uppercase tracking-wider">{{ $anggota->jabatan }}</div>
+                                                            <div class="text-xs text-brand-600 font-semibold uppercase tracking-wider">{{ $anggota->jabatan }}</div>
                                                             <div class="text-sm font-bold text-gray-800 mt-1 line-clamp-2" title="{{ $anggota->nama_lengkap }}">{{ $anggota->nama_lengkap }}</div>
                                                             @if($anggota->email)
                                                                 <div class="text-xs text-gray-500 mt-1">{{ $anggota->email }}</div>
@@ -146,3 +146,5 @@
         @endif
     </div>
 </x-app-layout>
+
+

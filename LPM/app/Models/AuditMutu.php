@@ -21,6 +21,9 @@ class AuditMutu extends Model
         'deskripsi_temuan',
         'rekomendasi',
         'rencana_tindak_lanjut',
+        'akar_masalah',
+        'tindak_lanjut',
+        'bukti_perbaikan',
         'status_audit',
     ];
 

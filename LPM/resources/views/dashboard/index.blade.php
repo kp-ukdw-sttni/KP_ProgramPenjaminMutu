@@ -30,13 +30,13 @@
         </div>
         
         <!-- Total Prodi -->
-        <div class="bg-blue-600 rounded-2xl shadow-sm p-4 text-white">
+        <div class="bg-brand-600 rounded-2xl shadow-sm p-4 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-blue-100 text-sm font-medium">Program Studi</p>
+                    <p class="text-brand-100 text-sm font-medium">Program Studi</p>
                     <p class="text-3xl font-bold mt-1">{{ $kpi['total_prodi'] ?? 0 }}</p>
                 </div>
-                <div class="p-2 bg-blue-500 rounded-lg">
+                <div class="p-2 bg-brand-500 rounded-lg">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 </div>
             </div>
@@ -97,10 +97,10 @@
 
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- PPEPP Cycle Donut Chart -->
+        <!-- Siklus Evaluasi Donut Chart -->
         <div class="col-span-1 bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-            <h3 class="text-lg font-semibold text-slate-800 mb-4">PPEPP Status</h3>
-            <div id="ppepp-chart" class="flex justify-center"></div>
+            <h3 class="text-lg font-semibold text-slate-800 mb-4">Siklus Evaluasi</h3>
+            <div id="status-chart" class="flex justify-center"></div>
         </div>
         
         <!-- Open KTS by Prodi Bar Chart -->
@@ -116,7 +116,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-slate-200 text-sm font-medium text-slate-500">
+                    <tr class="border-b border-slate-200 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
                         <th class="py-3 px-4">No</th>
                         <th class="py-3 px-4">Prodi</th>
                         <th class="py-3 px-4">Kategori</th>
@@ -128,7 +128,7 @@
                 </thead>
                 <tbody class="text-sm text-slate-700">
                     @forelse($recentFindings as $index => $finding)
-                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 hover:bg-slate-50 transition-colors">
                             <td class="py-3 px-4">{{ $index + 1 }}</td>
                             <td class="py-3 px-4">{{ $finding->evaluasiDiri->programStudi->nama_prodi ?? '-' }}</td>
                             <td class="py-3 px-4">
@@ -164,10 +164,10 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // PPEPP Donut Chart
-        const ppeppData = @json($pppepData);
-        const ppeppOptions = {
-            series: [ppeppData.draft || 0, ppeppData.submitted || 0, ppeppData.audited || 0],
+        // Siklus Evaluasi Donut Chart
+        const statusData = @json($pppepData);
+        const statusOptions = {
+            series: [statusData.draft || 0, statusData.submitted || 0, statusData.audited || 0],
             labels: ['Draft', 'Submitted', 'Audited'],
             chart: {
                 type: 'donut',
@@ -189,8 +189,8 @@
                 position: 'bottom'
             }
         };
-        const ppeppChart = new ApexCharts(document.querySelector("#ppepp-chart"), ppeppOptions);
-        ppeppChart.render();
+        const statusChart = new ApexCharts(document.querySelector("#status-chart"), statusOptions);
+        statusChart.render();
 
         // KTS Bar Chart
         const ktsData = @json($openKtsByProdi);
@@ -243,3 +243,6 @@
     });
 </script>
 @endpush
+
+
+

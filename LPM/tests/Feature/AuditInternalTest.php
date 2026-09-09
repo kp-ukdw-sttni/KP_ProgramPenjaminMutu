@@ -37,10 +37,13 @@ class AuditInternalTest extends TestCase
 
         $response = $this->actingAs($auditor)
             ->post(route('audit-internal.temuan.store', $evaluasi), [
-                'evaluasi_diri_id' => $evaluasi->id,
-                'kategori_temuan' => KategoriTemuan::KTS->value,
-                'deskripsi_temuan' => 'Terdapat dokumen yang kurang lengkap untuk standar ini.',
-                'rekomendasi' => 'Segera lengkapi dokumen terkait.',
+                'temuan' => [
+                    [
+                        'kategori_temuan' => KategoriTemuan::KTS->value,
+                        'deskripsi_temuan' => 'Terdapat dokumen yang kurang lengkap untuk standar ini.',
+                        'rekomendasi' => 'Segera lengkapi dokumen terkait.',
+                    ]
+                ],
             ]);
 
         $response->assertRedirect(route('audit-internal.show', $evaluasi));
@@ -82,12 +85,13 @@ class AuditInternalTest extends TestCase
 
         $response = $this->actingAs($auditee)
             ->patch(route('audit-internal.respond', $finding), [
-                'rencana_tindak_lanjut' => 'Kami akan melengkapi dokumen dalam waktu maksimal satu minggu dari sekarang.',
+                'akar_masalah' => 'Kurangnya pemahaman mengenai prosedur penyiapan dokumen.',
+                'tindak_lanjut' => 'Kami akan melengkapi dokumen dalam waktu maksimal satu minggu dari sekarang.',
             ]);
 
         $response->assertRedirect(route('audit-internal.show', $evaluasi));
         $this->assertEquals(StatusAudit::InProgress, $finding->fresh()->status_audit);
-        $this->assertEquals('Kami akan melengkapi dokumen dalam waktu maksimal satu minggu dari sekarang.', $finding->fresh()->rencana_tindak_lanjut);
+        $this->assertEquals('Kami akan melengkapi dokumen dalam waktu maksimal satu minggu dari sekarang.', $finding->fresh()->tindak_lanjut);
     }
 
     /**

@@ -108,7 +108,7 @@
                     <label for="file_bukti_fisik" class="block text-sm font-medium text-slate-700">Bukti Fisik</label>
                     
                     @if($evaluasi->file_bukti_fisik)
-                        <div class="mb-3 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                        <div class="mb-3 text-sm text-brand-600 bg-brand-50 p-3 rounded-lg border border-brand-200">
                             <div class="font-medium">📁 Berkas saat ini: {{ basename($evaluasi->file_bukti_fisik) }}</div>
                             @php
                                 $ext = pathinfo($evaluasi->file_bukti_fisik, PATHINFO_EXTENSION);
@@ -147,3 +147,5 @@
     </div>
 </div>
 @endsection
+
+

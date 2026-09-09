@@ -39,7 +39,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-50 border-b border-slate-200 text-sm font-medium text-slate-500">
+                    <tr class="bg-slate-50 border-b border-slate-200 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
                         <th class="py-3 px-4 w-12">No</th>
                         <th class="py-3 px-4">Judul</th>
                         <th class="py-3 px-4">Nomor Dokumen</th>
@@ -51,7 +51,7 @@
                 </thead>
                 <tbody class="text-sm text-slate-700 divide-y divide-slate-100">
                     @forelse($dokumens as $index => $d)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors hover:bg-slate-50 transition-colors">
                             <td class="py-3 px-4">{{ $dokumens->firstItem() + $index }}</td>
                             <td class="py-3 px-4 font-medium text-slate-900">{{ $d->judul }}</td>
                             <td class="py-3 px-4">{{ $d->nomor_dokumen ?? '-' }}</td>
@@ -110,3 +110,5 @@
     </div>
 </div>
 @endsection
+
+

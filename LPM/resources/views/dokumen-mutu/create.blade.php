@@ -32,7 +32,7 @@
                     <!-- Judul -->
                     <div>
                         <label for="judul" class="block text-sm font-semibold text-gray-700 mb-1">Judul Dokumen <span class="text-red-500">*</span></label>
-                        <input type="text" id="judul" name="judul" value="{{ old('judul') }}" required placeholder="Contoh: Dokumen Standar Kompetensi Lulusan" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-2.5 @error('judul') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
+                        <input type="text" id="judul" name="judul" value="{{ old('judul') }}" required placeholder="Contoh: Dokumen Standar Kompetensi Lulusan" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm p-2.5 @error('judul') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
                         @error('judul')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -41,7 +41,7 @@
                     <!-- Nomor Dokumen -->
                     <div>
                         <label for="nomor_dokumen" class="block text-sm font-semibold text-gray-700 mb-1">Nomor Dokumen</label>
-                        <input type="text" id="nomor_dokumen" name="nomor_dokumen" value="{{ old('nomor_dokumen') }}" placeholder="Contoh: SK/001/LPM/2026" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-2.5 @error('nomor_dokumen') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
+                        <input type="text" id="nomor_dokumen" name="nomor_dokumen" value="{{ old('nomor_dokumen') }}" placeholder="Contoh: SK/001/LPM/2026" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm p-2.5 @error('nomor_dokumen') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
                         @error('nomor_dokumen')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -52,7 +52,7 @@
                         <!-- Kategori -->
                         <div>
                             <label for="kategori" class="block text-sm font-semibold text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
-                            <select id="kategori" name="kategori" required class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-2.5 @error('kategori') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
+                            <select id="kategori" name="kategori" required class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm p-2.5 @error('kategori') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
                                 <option value="">Pilih Kategori</option>
                                 <option value="kebijakan" {{ old('kategori') == 'kebijakan' ? 'selected' : '' }}>Kebijakan</option>
                                 <option value="manual" {{ old('kategori') == 'manual' ? 'selected' : '' }}>Manual</option>
@@ -67,7 +67,7 @@
                         <!-- Tahun Berlaku -->
                         <div>
                             <label for="tahun_berlaku" class="block text-sm font-semibold text-gray-700 mb-1">Tahun Berlaku <span class="text-red-500">*</span></label>
-                            <input type="number" id="tahun_berlaku" name="tahun_berlaku" value="{{ old('tahun_berlaku', date('Y')) }}" required min="2000" max="2100" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-2.5 @error('tahun_berlaku') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
+                            <input type="number" id="tahun_berlaku" name="tahun_berlaku" value="{{ old('tahun_berlaku', date('Y')) }}" required min="2000" max="2100" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm p-2.5 @error('tahun_berlaku') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
                             @error('tahun_berlaku')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -76,7 +76,7 @@
                         <!-- Semester -->
                         <div>
                             <label for="semester" class="block text-sm font-semibold text-gray-700 mb-1">Semester <span class="text-red-500">*</span></label>
-                            <select id="semester" name="semester" required class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm p-2.5 @error('semester') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
+                            <select id="semester" name="semester" required class="w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm p-2.5 @error('semester') border-red-300 focus:ring-red-500 focus:ring-red-500 @enderror">
                                 <option value="">Pilih Semester</option>
                                 @foreach(\App\Enums\Semester::cases() as $sem)
                                     <option value="{{ $sem->value }}" {{ old('semester') == $sem->value ? 'selected' : '' }}>
@@ -92,7 +92,7 @@
 
                     <!-- Status Aktif -->
                     <div class="flex items-center pt-2">
-                        <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500">
                         <label for="is_active" class="ml-2 block text-sm font-medium text-gray-700">Dokumen Aktif</label>
                     </div>
                     @error('is_active')
@@ -108,12 +108,12 @@
                         <div id="upload-container" class="relative w-full">
                             
                             <!-- Default Dropzone Area -->
-                            <div id="dropzone-area" class="flex flex-col justify-center px-6 pt-10 pb-10 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition-all duration-200 bg-gray-50/50 text-center @error('file') border-red-300 bg-red-50/50 @enderror">
+                            <div id="dropzone-area" class="flex flex-col justify-center px-6 pt-10 pb-10 border-2 border-gray-300 border-dashed rounded-lg hover:border-brand-500 transition-all duration-200 bg-gray-50/50 text-center @error('file') border-red-300 bg-red-50/50 @enderror">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <div class="flex text-sm text-gray-600 justify-center mt-3">
-                                    <label for="file" class="relative cursor-pointer bg-white rounded-md font-semibold text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 px-3 py-1.5 border border-gray-200 shadow-sm transition-all duration-150">
+                                    <label for="file" class="relative cursor-pointer bg-white rounded-md font-semibold text-brand-600 hover:text-brand-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-500 px-3 py-1.5 border border-gray-200 shadow-sm transition-all duration-150">
                                         <span>Pilih Berkas</span>
                                         <input id="file" name="file" type="file" class="sr-only" accept=".pdf,.doc,.docx" onchange="previewNewFile(this)">
                                     </label>
@@ -157,7 +157,7 @@
             <!-- Form Actions -->
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 mt-6">
                 <a href="{{ route('dokumen-mutu.index') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 shadow-sm">Batal</a>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm">Simpan Dokumen</button>
+                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors duration-200 shadow-sm">Simpan Dokumen</button>
             </div>
         </form>
     </div>
@@ -218,3 +218,5 @@ function resetFileSelection() {
 }
 </script>
 @endpush
+
+

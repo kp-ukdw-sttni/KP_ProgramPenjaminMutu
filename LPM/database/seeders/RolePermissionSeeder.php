@@ -38,9 +38,17 @@ class RolePermissionSeeder extends Seeder
         // Roles
         // ----------------------------------------------------------------
 
-        /** Superadmin / Ketua LPM — full access */
+        /** Superadmin / Ketua LPM — administrative & viewing access, RBAC boundaries strictly enforced */
         $superadmin = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
-        $superadmin->syncPermissions($permissions);
+        $superadmin->syncPermissions([
+            'manage-users',
+            'manage-dokumen',
+            'view-dokumen',
+            'manage-standar',
+            'view-evaluasi',
+            'view-dashboard',
+            'manage-kepengurusan',
+        ]);
 
         /** Admin — management access */
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
