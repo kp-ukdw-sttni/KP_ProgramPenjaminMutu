@@ -28,17 +28,29 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <form action="{{ route('evaluasi-diri.update', $evaluasi) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('evaluasi-diri.update', $evaluasi) }}" method="POST" enctype="multipart/form-data"
+              x-data="{ 
+                  targetCapaian: '',
+                  init() {
+                      this.updateTarget();
+                  },
+                  updateTarget() {
+                      let select = this.$refs.standarSelect;
+                      if (!select) return;
+                      let option = select.options[select.selectedIndex];
+                      this.targetCapaian = option ? option.getAttribute('data-target') : '';
+                  }
+              }">
             @csrf
             @method('PUT')
             
             <div class="p-6 sm:p-8 space-y-6">
                 <div>
                     <label for="standar_mutu_id" class="block text-sm font-medium text-slate-700">Standar Mutu</label>
-                    <select name="standar_mutu_id" id="standar_mutu_id" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="">-- Pilih Standar Mutu --</option>
+                    <select name="standar_mutu_id" id="standar_mutu_id" x-ref="standarSelect" @change="updateTarget()" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="" data-target="">-- Pilih Standar Mutu --</option>
                         @foreach($standars as $standar)
-                            <option value="{{ $standar->id }}" {{ old('standar_mutu_id', $evaluasi->standar_mutu_id) == $standar->id ? 'selected' : '' }}>
+                            <option value="{{ $standar->id }}" data-target="{{ $standar->target_capaian }}" {{ old('standar_mutu_id', $evaluasi->standar_mutu_id) == $standar->id ? 'selected' : '' }}>
                                 {{ $standar->kode_standar }} - {{ $standar->nama_standar }}
                             </option>
                         @endforeach
@@ -85,6 +97,13 @@
                         @error('semester')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
+                    </div>
+                </div>
+
+                <div x-show="targetCapaian !== ''" x-transition:enter="transition ease-out duration-200" style="display: none;">
+                    <label class="block text-sm font-medium text-slate-700">Capaian Standar Mutu</label>
+                    <div class="mt-1 w-full bg-slate-50 border border-slate-300 rounded-md shadow-sm px-3 py-2 sm:text-sm text-slate-600 cursor-not-allowed">
+                        <span x-text="targetCapaian"></span>
                     </div>
                 </div>
 
