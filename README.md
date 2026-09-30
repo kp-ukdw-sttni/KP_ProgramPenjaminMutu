@@ -1,6 +1,6 @@
-# Sistem Evaluasi Standar Mutu (Monev) LPM STTNI
+# Sistem Evaluasi Standar Mutu LPM STTNI
 
-Sistem Evaluasi Standar Mutu (Monev) merupakan platform digital terpusat yang dikembangkan untuk Lembaga Penjaminan Mutu (LPM) Sekolah Tinggi Teologi Nazarene Indonesia (STTNI). Sistem ini dirancang untuk memfasilitasi pelaksanaan Audit Mutu Internal (AMI) secara efektif, efisien, dan transparan.
+Sistem Evaluasi Standar Mutu merupakan platform digital terpusat yang dikembangkan untuk Lembaga Penjaminan Mutu (LPM) Sekolah Tinggi Teologi Nazarene Indonesia (STTNI). Sistem ini dirancang untuk memfasilitasi pelaksanaan Audit Mutu Internal (AMI) secara efektif, efisien, dan transparan.
 
 Platform ini memungkinkan unit kerja (Auditee) untuk mengunggah laporan evaluasi capaian standar mutu, serta memfasilitasi tim penjaminan mutu (Auditor) untuk melakukan penilaian objektif, memberikan skor, dan memantau seluruh siklus tindakan perbaikan secara komprehensif.
 
