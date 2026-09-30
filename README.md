@@ -1,76 +1,88 @@
-# Sistem Informasi Penjaminan Mutu Internal (e-SPMI)
+# Sistem Evaluasi Standar Mutu (Monev) LPM STTNI
 
-Repositori ini memuat kode sumber untuk aplikasi e-SPMI (Sistem Informasi Penjaminan Mutu Internal). Aplikasi ini dirancang untuk mendigitalisasi siklus Penetapan, Pelaksanaan, Evaluasi, Pengendalian, dan Peningkatan (PPEPP) standar mutu pada perguruan tinggi. Sistem ini dikembangkan menggunakan kerangka kerja Laravel.
+Sistem Evaluasi Standar Mutu (Monev) merupakan platform digital terpusat yang dikembangkan untuk Lembaga Penjaminan Mutu (LPM) Sekolah Tinggi Teologi Nazarene Indonesia (STTNI). Sistem ini dirancang untuk memfasilitasi pelaksanaan Audit Mutu Internal (AMI) secara efektif, efisien, dan transparan.
 
-## Tim Pengembang
+Platform ini memungkinkan unit kerja (Auditee) untuk mengunggah laporan evaluasi capaian standar mutu, serta memfasilitasi tim penjaminan mutu (Auditor) untuk melakukan penilaian objektif, memberikan skor, dan memantau seluruh siklus tindakan perbaikan secara komprehensif.
 
-Berikut adalah susunan anggota tim pengembang yang diurutkan berdasarkan Nomor Induk Mahasiswa (NIM):
-
-*   Benyamin Prasetya Putra Ramayana - 71230984
-*   Putu Gde Kenzie Carlen Mataram - 71230994
-*   Edrian Sepriadi Irawan - 71231011
+---
 
 ## Fitur Utama
 
-Arsitektur sistem ini mencakup beberapa modul inti yang dirancang sesuai dengan standar operasional penjaminan mutu:
+*   **Role-Based Access Control (RBAC)**
+    Sistem menerapkan pemisahan hak akses (segregation of duties) yang ketat melalui Spatie Permission. Mendukung *multi-role assignments* dengan tingkatan:
+    *   **Auditee**: Bertanggung jawab mengunggah evaluasi diri dan melakukan revisi.
+    *   **Auditor**: Melakukan peninjauan dokumen, memberikan skor, dan merumuskan temuan audit.
+    *   **Admin**: Mengelola pengaturan data master institut.
+    *   **Superadmin**: Mengelola administrasi infrastruktur TI dan mengontrol sistem secara penuh.
 
-*   **Autentikasi & Otorisasi:** Sistem keamanan berbasis peran (Role-Based Access Control) yang membatasi akses pengguna sesuai dengan wewenang masing-masing (Auditee, Auditor, Superadmin).
-*   **Manajemen Standar Mutu:** Modul untuk menetapkan dan mengelola indikator mutu, dilengkapi dengan fitur integrasi data massal (Impor/Ekspor) menggunakan format Excel.
-*   **Evaluasi Diri & Dokumen Mutu:** Modul pencatatan laporan pelaksanaan mutu yang memungkinkan pengunggahan bukti fisik.
-*   **Audit Internal:** Modul untuk mencatat temuan audit, evaluasi kelengkapan dokumen, dan respons tindak lanjut.
-*   **Keamanan Berkas Terisolasi:** Implementasi penyimpanan dokumen privat pada direktori `storage/app/private` untuk mencegah akses publik yang tidak sah terhadap berkas akreditasi.
+*   **Document Lifecycle Management**
+    Mekanisme otomasi alur kerja dokumen dengan sistem penguncian (locking) mutakhir. Mencegah modifikasi sepihak oleh Auditee setelah dokumen diserahkan. Siklus status dokumen meliputi: **Draft ➝ Menunggu Review ➝ Revisi ➝ Selesai**.
 
-## Persyaratan Sistem
+*   **Quantitative Scoring (Penilaian Kuantitatif)**
+    Sistem penilaian menggunakan instrumen skala Likert (1 - 4) untuk mengukur tingkat pemenuhan standar mutu secara kuantitatif dan terukur.
 
-*   PHP ^8.2
-*   Composer
-*   MySQL / MariaDB
-*   Node.js & NPM (untuk kompilasi *asset* *frontend*)
+*   **Dynamic Audit Findings & CAPA (Tindakan Koreksi & Pencegahan)**
+    Sistem memiliki relasi *One-to-Many* yang dinamis untuk pencatatan temuan audit ganda pada setiap dokumen. Dilengkapi siklus pemantauan *Corrective and Preventive Action* (CAPA) komprehensif yang mewajibkan pengisian **Akar Masalah**, **Tindak Lanjut**, dan **Bukti Perbaikan** sebelum sebuah temuan dapat dinyatakan 'Ditutup' (Closed).
 
-## Panduan Instalasi
+---
 
-Jalankan perintah berikut pada terminal untuk mengonfigurasi proyek di lingkungan lokal:
+## Teknologi yang Digunakan
 
-1.  Kloning repositori dan masuk ke dalam direktori proyek:
-    ```bash
-    git clone <url-repositori>
-    cd KP_ProgramPenjaminMutu-main/LPM
-    ```
-2.  Instalasi dependensi PHP menggunakan Composer:
-    ```bash
-    composer install
-    ```
-3.  Instalasi dan kompilasi dependensi *frontend*:
-    ```bash
-    npm install
-    npm run build
-    ```
-4.  Salin fail konfigurasi *environment*:
-    ```bash
-    cp .env.example .env
-    ```
-5.  Konfigurasi koneksi basis data pada fail `.env`, kemudian buat *Application Key*:
-    ```bash
-    php artisan key:generate
-    ```
-6.  Jalankan migrasi basis data beserta *seeder* untuk mengisi data awal (pengguna admin, peran, dan program studi):
-    ```bash
-    php artisan migrate --seed
-    ```
-7.  Tautkan direktori penyimpanan publik:
-    ```bash
-    php artisan storage:link
-    ```
-8.  Jalankan server pengembangan lokal:
-    ```bash
-    php artisan serve
-    ```
+Sistem ini dikembangkan menggunakan tumpukan teknologi modern untuk menjamin stabilitas dan keamanan tingkat tinggi:
 
-## Pengujian Sistem
+*   **Backend:** Laravel (PHP)
+*   **Frontend:** Tailwind CSS, Alpine.js, Blade Templating
+*   **Database:** MySQL / MariaDB
 
-Proyek ini dilengkapi dengan skenario pengujian otomatis menggunakan PHPUnit untuk memastikan integritas fitur dan keamanan. 
+---
 
-Jalankan perintah berikut untuk mengeksekusi seluruh pengujian (Termasuk pengujian untuk RBAC, Evaluasi Diri, Keamanan Berkas, dan Ekspor/Impor Excel):
+##  Panduan Instalasi dan Implementasi (Deployment)
+
+Panduan berikut ditujukan bagi administrator sistem TI yang bertanggung jawab terhadap implementasi platform di lingkungan produksi (production environment).
+
+### 1. Persiapan Basis Kode
+Lakukan *clone* atau ekstrak kode sumber proyek ke direktori server Anda. Buka terminal/konsol dan jalankan perintah berikut untuk menginstal dependensi:
+
 ```bash
-php artisan test
+composer install --optimize-autoloader --no-dev
+```
+
+### 2. Konfigurasi Lingkungan (.env)
+Salin berkas `.env.example` menjadi `.env` lalu sesuaikan konfigurasi *database* dengan basis data Anda:
+
+```bash
+cp .env.example .env
+```
+
+Pastikan Anda mengubah pengaturan kredensial database di dalam `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lpm_sttni
+DB_USERNAME=root
+DB_PASSWORD=password_database_anda
+```
+
+### 3. Persiapan Kriptografi dan Tautan Penyimpanan
+Jalankan perintah berikut untuk menghasilkan *Application Key* dan menautkan direktori penyimpanan publik:
+
+```bash
+php artisan key:generate
+php artisan storage:link
+```
+
+### 4. Instalasi Basis Data (CRITICAL)
+Sistem ini sangat bergantung pada struktur data master yang telah dipersiapkan sebelumnya.
+**PENGINGAT PENTING: DILARANG KERAS menjalankan `php artisan migrate:fresh --seed` pada lingkungan produksi untuk mencegah hilangnya data master vital.**
+
+**Langkah yang wajib dilakukan:**
+Buat database bernama `lpm_sttni` di MySQL/MariaDB, kemudian langsung lakukan import (restore) berkas SQL yang telah disediakan:
+`evaluasi_standar_mutu_sttni.sql`
+
+### 5. Optimalisasi Sistem
+Bersihkan seluruh *cache* untuk memastikan performa yang maksimal dan memastikan konfigurasi terbaru terbaca:
+
+```bash
+php artisan optimize:clear
 ```
