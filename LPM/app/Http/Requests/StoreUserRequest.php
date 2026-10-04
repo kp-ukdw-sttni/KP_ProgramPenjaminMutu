@@ -20,7 +20,8 @@ class StoreUserRequest extends FormRequest
             'password'         => ['required', Password::defaults(), 'confirmed'],
             'roles'            => ['required', 'array', 'min:1'],
             'roles.*'          => ['string', 'exists:roles,name'],
-            'program_studi_id' => ['nullable', 'exists:program_studi,id'],
+            'program_studi_id' => [is_array($this->roles) && in_array('auditee', $this->roles) ? 'required' : 'nullable', 'exists:program_studi,id'],
         ];
     }
 }
+

@@ -16,9 +16,12 @@ class StoreEvaluasiDiriRequest extends FormRequest
 
     public function rules(): array
     {
+        $user = $this->user();
+        $isOnlyAuditee = $user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor']);
+
         return [
             'standar_mutu_id'        => ['required', 'exists:standar_mutu,id'],
-            'program_studi_id'       => ['required', 'exists:program_studi,id'],
+            'program_studi_id'       => [$isOnlyAuditee ? 'nullable' : 'required', 'exists:program_studi,id'],
             'tahun_akademik'         => ['required', 'string', 'max:20'],
             'semester'               => ['required', Rule::enum(Semester::class)],
             'capaian_aktual'         => ['nullable', 'string', 'max:255'],

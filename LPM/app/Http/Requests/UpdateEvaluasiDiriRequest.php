@@ -11,16 +11,17 @@ class UpdateEvaluasiDiriRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Only draft evaluasi can be updated by auditee
-        $evaluasi = $this->route('evaluasi_diri');
-        return $this->user()->can('create-evaluasi') && $evaluasi?->isDraft();
+        return $this->user()->can('create-evaluasi');
     }
 
     public function rules(): array
     {
+        $user = $this->user();
+        $isOnlyAuditee = $user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor']);
+
         return [
             'standar_mutu_id'        => ['required', 'exists:standar_mutu,id'],
-            'program_studi_id'       => ['required', 'exists:program_studi,id'],
+            'program_studi_id'       => [$isOnlyAuditee ? 'nullable' : 'required', 'exists:program_studi,id'],
             'tahun_akademik'         => ['required', 'string', 'max:20'],
             'semester'               => ['required', Rule::enum(Semester::class)],
             'capaian_aktual'         => ['nullable', 'string', 'max:255'],
@@ -28,8 +29,21 @@ class UpdateEvaluasiDiriRequest extends FormRequest
             'file_bukti_fisik'       => [
                 'nullable',
                 File::types(['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'zip'])
-                    ->max(10 * 1024),
+                    ->max(10 * 1024), // 10 MB
             ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'standar_mutu_id'        => 'Standar Mutu',
+            'program_studi_id'       => 'Program Studi',
+            'tahun_akademik'         => 'Tahun Akademik',
+            'semester'               => 'Semester',
+            'capaian_aktual'         => 'Capaian Aktual',
+            'deskripsi_ketercapaian' => 'Deskripsi Ketercapaian',
+            'file_bukti_fisik'       => 'Bukti Fisik',
         ];
     }
 }

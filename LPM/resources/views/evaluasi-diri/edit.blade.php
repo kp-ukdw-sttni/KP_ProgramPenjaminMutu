@@ -60,6 +60,11 @@
                     @enderror
                 </div>
 
+                                @php
+                    $user = auth()->user();
+                    $isOnlyAuditee = $user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor']);
+                @endphp
+                @if(!$isOnlyAuditee)
                 <div>
                     <label for="program_studi_id" class="block text-sm font-medium text-slate-700">Program Studi</label>
                     <select name="program_studi_id" id="program_studi_id" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -74,6 +79,7 @@
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+                @endif
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
@@ -166,5 +172,6 @@
     </div>
 </div>
 @endsection
+
 
 

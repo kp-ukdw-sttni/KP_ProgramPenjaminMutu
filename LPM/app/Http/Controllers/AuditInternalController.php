@@ -26,7 +26,7 @@ class AuditInternalController extends Controller
         $query = EvaluasiDiri::with(['standarMutu', 'programStudi', 'auditMutus'])
             ->whereIn('status', ['submitted', 'audited']);
 
-        if ($user->isAuditee() && ! $user->isSuperadmin()) {
+        if ($user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
             $query->where('program_studi_id', $user->program_studi_id);
         }
 
@@ -46,9 +46,16 @@ class AuditInternalController extends Controller
     {
         $this->authorize('view-evaluasi');
 
-        $prodis = ProgramStudi::with([
+        $query = ProgramStudi::with([
             'evaluasiDiris.auditMutus',
-        ])->orderBy('nama_prodi')->get();
+        ])->orderBy('nama_prodi');
+
+        $user = $request->user();
+        if ($user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
+            $query->where('id', $user->program_studi_id);
+        }
+
+        $prodis = $query->get();
 
         return view('audit-internal.rekap', compact('prodis'));
     }
@@ -192,3 +199,12 @@ class AuditInternalController extends Controller
         return $this->service->streamBuktiPerbaikan($auditMutu);
     }
 }
+
+
+
+
+
+
+
+
+

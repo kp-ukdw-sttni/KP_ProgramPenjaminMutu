@@ -24,7 +24,7 @@
             <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-800 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 w-full sm:w-auto">Filter</button>
         </form>
 
-        @role('auditee|Auditee')
+        @role('auditee')
         <a href="{{ route('evaluasi-diri.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
             + Tambah Evaluasi
         </a>
@@ -76,7 +76,7 @@
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('evaluasi-diri.show', $evaluasi) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
                                 
-                                @if($evaluasi->status->value === 'draft' && auth()->user()->hasRole(['auditee', 'Auditee']))
+                                @if($evaluasi->status->value === 'draft' && auth()->user()->hasRole('auditee'))
                                     <span class="text-slate-300">|</span>
                                     <a href="{{ route('evaluasi-diri.edit', $evaluasi) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                     
@@ -112,5 +112,6 @@
     </div>
 </div>
 @endsection
+
 
 

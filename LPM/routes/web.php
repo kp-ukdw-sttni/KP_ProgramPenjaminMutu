@@ -12,35 +12,39 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PengurusLpmController;
 use Illuminate\Support\Facades\Route;
 
-// ── Public / Auth routes (from Breeze) ────────────────────────────────────────
+// -- Public / Auth routes (from Breeze) ---------------------------------------
 require __DIR__ . '/auth.php';
 
-// ── Redirect root to dashboard ────────────────────────────────────────────────
+// -- Redirect root to dashboard -----------------------------------------------
 Route::get('/', fn () => redirect()->route('dashboard'));
 
-// ── All authenticated routes ──────────────────────────────────────────────────
+// -- All authenticated routes -------------------------------------------------
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Summary Capaian Mutu
+    Route::get('/summary-evaluasi', [\App\Http\Controllers\SummaryEvaluasiController::class, 'index'])->name('summary.index');
+    Route::get('/summary-evaluasi/{standarMutu}', [\App\Http\Controllers\SummaryEvaluasiController::class, 'show'])->name('summary.show');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // ── Dokumen Mutu ──────────────────────────────────────────────────────────
+    // -- Dokumen Mutu ---------------------------------------------------------
     Route::resource('dokumen-mutu', DokumenMutuController::class)->parameters(['dokumen-mutu' => 'dokumenMutu']);
     Route::get('/dokumen-mutu/{dokumenMutu}/download', [DokumenMutuController::class, 'download'])
         ->name('dokumen-mutu.download');
 
-    // ── Standar Mutu ──────────────────────────────────────────────────────────
+    // -- Standar Mutu ---------------------------------------------------------
     Route::get('/standar-mutu/export', [StandarMutuController::class, 'export'])
         ->name('standar-mutu.export');
     Route::post('/standar-mutu/import', [StandarMutuController::class, 'import'])
         ->name('standar-mutu.import');
     Route::resource('standar-mutu', StandarMutuController::class)->parameters(['standar-mutu' => 'standarMutu']);
 
-    // ── Evaluasi Diri (Instrumen Penilaian) ───────────────────────────────────
+    // -- Evaluasi Diri (Instrumen Penilaian) ----------------------------------
     Route::get('/evaluasi-diri', [EvaluasiDiriController::class, 'index'])->name('evaluasi-diri.index');
 
     // Strictly Auditee role for creating/modifying/submitting evaluasi
-    Route::middleware(['role:auditee|Auditee'])->group(function () {
+    Route::middleware(['role:auditee'])->group(function () {
         Route::get('/evaluasi-diri/create', [EvaluasiDiriController::class, 'create'])->name('evaluasi-diri.create');
         Route::post('/evaluasi-diri', [EvaluasiDiriController::class, 'store'])->name('evaluasi-diri.store');
         Route::get('/evaluasi-diri/{evaluasiDiri}/edit', [EvaluasiDiriController::class, 'edit'])->name('evaluasi-diri.edit');
@@ -56,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/evaluasi-diri/{evaluasiDiri}/download-bukti', [EvaluasiDiriController::class, 'downloadBukti'])
         ->name('evaluasi-diri.download-bukti');
 
-    // ── Audit Internal (Monev) ────────────────────────────────────────────────
+    // -- Audit Internal (Monev) -----------------------------------------------
     Route::prefix('audit-internal')->name('audit-internal.')->group(function () {
         Route::get('/', [AuditInternalController::class, 'index'])->name('index');
         Route::get('/rekap', [AuditInternalController::class, 'rekap'])->name('rekap');
@@ -64,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('bukti.download');
 
         // Strictly Auditor role for creating temuan, closing temuan, setting nilai
-        Route::middleware(['role:auditor|Auditor'])->group(function () {
+        Route::middleware(['role:auditor'])->group(function () {
             Route::get('/{evaluasiDiri}/temuan/create', [AuditInternalController::class, 'createTemuan'])
                 ->name('temuan.create');
             Route::post('/{evaluasiDiri}/temuan', [AuditInternalController::class, 'storeTemuan'])
@@ -76,7 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Strictly Auditee role for responding with CAPA
-        Route::middleware(['role:auditee|Auditee'])->group(function () {
+        Route::middleware(['role:auditee'])->group(function () {
             Route::get('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respondForm'])
                 ->name('respond.form');
             Route::patch('/finding/{auditMutu}/respond', [AuditInternalController::class, 'respond'])
@@ -86,15 +90,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{evaluasiDiri}', [AuditInternalController::class, 'show'])->name('show');
     });
 
-    // ── Profile ───────────────────────────────────────────────────────────────
+    // -- Profile --------------------------------------------------------------
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // ── Kepengurusan LPM ──────────────────────────────────────────────────────
+    // -- Kepengurusan LPM -----------------------------------------------------
     Route::resource('pengurus-lpm', PengurusLpmController::class)->parameters(['pengurus-lpm' => 'pengurusLpm']);
 
-    // ── Admin-only: Manajemen Pengguna ────────────────────────────────────────
+    // -- Admin-only: Manajemen Pengguna ---------------------------------------
     Route::middleware('role:superadmin')->group(function () {
         Route::resource('users', UserManagementController::class);
         Route::resource('fakultas', FakultasController::class)->parameters(['fakultas' => 'fakultas']);

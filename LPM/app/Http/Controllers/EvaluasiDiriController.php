@@ -23,7 +23,7 @@ class EvaluasiDiriController extends Controller
         $query = EvaluasiDiri::with(['standarMutu', 'programStudi']);
 
         // Auditees only see their own program studi's evaluations
-        if ($user->isAuditee() && ! $user->isSuperadmin()) {
+        if ($user->hasRole('auditee') && ! $user->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
             $query->where('program_studi_id', $user->program_studi_id);
         }
 
@@ -52,10 +52,12 @@ class EvaluasiDiriController extends Controller
 
     public function store(StoreEvaluasiDiriRequest $request)
     {
-        $this->service->create(
-            $request->safe()->except('file_bukti_fisik'),
-            $request->file('file_bukti_fisik')
-        );
+        $data = $request->safe()->except('file_bukti_fisik');
+        if ($request->user()->hasRole('auditee') && !$request->user()->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
+            $data['program_studi_id'] = $request->user()->program_studi_id;
+        }
+
+        $this->service->create($data, $request->file('file_bukti_fisik'));
 
         return redirect()->route('evaluasi-diri.index')
             ->with('success', 'Evaluasi diri berhasil disimpan sebagai Draft.');
@@ -90,11 +92,12 @@ class EvaluasiDiriController extends Controller
 
     public function update(UpdateEvaluasiDiriRequest $request, EvaluasiDiri $evaluasiDiri)
     {
-        $this->service->update(
-            $evaluasiDiri,
-            $request->safe()->except('file_bukti_fisik'),
-            $request->file('file_bukti_fisik')
-        );
+        $data = $request->safe()->except('file_bukti_fisik');
+        if ($request->user()->hasRole('auditee') && !$request->user()->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
+            $data['program_studi_id'] = $request->user()->program_studi_id;
+        }
+
+        $this->service->update($evaluasiDiri, $data, $request->file('file_bukti_fisik'));
 
         return redirect()->route('evaluasi-diri.show', $evaluasiDiri)
             ->with('success', 'Evaluasi diri berhasil diperbarui.');
