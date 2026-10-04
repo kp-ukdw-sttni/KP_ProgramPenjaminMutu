@@ -17,6 +17,14 @@ class EvaluasiDiriController extends Controller
         private readonly EvaluasiDiriService $service
     ) {}
 
+    private function ensureOwnership(EvaluasiDiri $evaluasiDiri)
+    {
+        $user = auth()->user();
+        if ($user->hasRole('auditee') && !$user->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
+            abort_unless($evaluasiDiri->program_studi_id === $user->program_studi_id, 403, 'Anda tidak memiliki akses ke dokumen ini.');
+        }
+    }
+
     public function index(Request $request)
     {
         $user  = $request->user();
@@ -65,6 +73,7 @@ class EvaluasiDiriController extends Controller
 
     public function show(EvaluasiDiri $evaluasiDiri)
     {
+        $this->ensureOwnership($evaluasiDiri);
         // Eager-load all audit findings and their auditors to prevent N+1
         $evaluasiDiri->load([
             'standarMutu',
@@ -78,6 +87,7 @@ class EvaluasiDiriController extends Controller
     public function edit(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('create-evaluasi');
+        $this->ensureOwnership($evaluasiDiri);
         abort_unless($evaluasiDiri->isDraft(), 403, 'Hanya evaluasi berstatus Draft yang dapat diubah.');
 
         $standars = StandarMutu::orderBy('kode_standar')->get();
@@ -92,6 +102,7 @@ class EvaluasiDiriController extends Controller
 
     public function update(UpdateEvaluasiDiriRequest $request, EvaluasiDiri $evaluasiDiri)
     {
+        $this->ensureOwnership($evaluasiDiri);
         $data = $request->safe()->except('file_bukti_fisik');
         if ($request->user()->hasRole('auditee') && !$request->user()->hasAnyRole(['superadmin', 'admin', 'auditor'])) {
             $data['program_studi_id'] = $request->user()->program_studi_id;
@@ -103,24 +114,20 @@ class EvaluasiDiriController extends Controller
             ->with('success', 'Evaluasi diri berhasil diperbarui.');
     }
 
-    /**
-     * Submit a draft evaluasi for auditing.
-     */
     public function submit(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('create-evaluasi');
+        $this->ensureOwnership($evaluasiDiri);
         $this->service->submit($evaluasiDiri);
 
         return redirect()->route('evaluasi-diri.show', $evaluasiDiri)
             ->with('success', 'Evaluasi diri berhasil disubmit dan siap untuk diaudit.');
     }
 
-    /**
-     * Securely stream the bukti fisik file.
-     */
     public function downloadBukti(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('view-evaluasi');
+        $this->ensureOwnership($evaluasiDiri);
 
         return $this->service->streamBuktiFisik($evaluasiDiri);
     }
@@ -128,6 +135,7 @@ class EvaluasiDiriController extends Controller
     public function destroy(EvaluasiDiri $evaluasiDiri)
     {
         $this->authorize('create-evaluasi');
+        $this->ensureOwnership($evaluasiDiri);
         abort_unless($evaluasiDiri->isDraft(), 403, 'Hanya evaluasi Draft yang dapat dihapus.');
 
         $this->service->delete($evaluasiDiri);

@@ -13,7 +13,7 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         // -- Superadmin / Ketua LPM ------------------------------------------
-        Role::firstOrCreate(['name' => 'Superadmin']);
+        Role::firstOrCreate(['name' => 'superadmin']);
 
         $superadmin = User::updateOrCreate(
             ['email' => 'lpm@sttni.ac.id'],
@@ -22,8 +22,9 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('password123'),
             ]
         );
-        $superadmin->assignRole('Superadmin');
+        $superadmin->assignRole('superadmin');
 
         $this->command->info('Default Superadmin user seeded.');
     }
 }
+
